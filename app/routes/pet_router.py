@@ -8,18 +8,18 @@ router = APIRouter(prefix="/pets", tags=["pets"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_pet(payload: PetCreateSchema, service: PetServiceDep) -> PetSchema:
-    return service.add_pet(payload)
+    return await service.add_pet(payload)
 
 
 @router.get("/")
 async def list_pets(service: PetServiceDep) -> list[PetSchema]:
-    return service.get_pets()
+    return await service.get_pets()
 
 
 @router.get("/{pet_id}")
 async def get_pet(pet_id: int, service: PetServiceDep) -> PetSchema:
     try:
-        return service.get_pet(pet_id)
+        return await service.get_pet(pet_id)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
@@ -27,7 +27,7 @@ async def get_pet(pet_id: int, service: PetServiceDep) -> PetSchema:
 @router.put("/{pet_id}")
 async def update_pet(pet_id: int, payload: PetUpdateSchema, service: PetServiceDep) -> PetSchema:
     try:
-        return service.update_pet(pet_id, payload)
+        return await service.update_pet(pet_id, payload)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
@@ -35,6 +35,6 @@ async def update_pet(pet_id: int, payload: PetUpdateSchema, service: PetServiceD
 @router.delete("/{pet_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_pet(pet_id: int, service: PetServiceDep) -> None:
     try:
-        service.delete_pet(pet_id)
+        await service.delete_pet(pet_id)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc

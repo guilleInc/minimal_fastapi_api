@@ -5,7 +5,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-from app.repositories.pet_repository import PetRepository
+from app.repositories.pet_repository import PetRepository, SqlaPetRepository
 from app.services.pet_service import PetService
 
 
@@ -18,7 +18,7 @@ SessionDep = Annotated[Session, Depends(get_db_session)]
 
 
 def get_pet_repository(session: SessionDep) -> PetRepository:
-    return PetRepository(session=session)
+    return SqlaPetRepository(session=session)
 
 
 PetRepositoryDep = Annotated[PetRepository, Depends(get_pet_repository)]

@@ -1,11 +1,24 @@
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.orm import Session
+from typing import Protocol
 
 from app.models.pet_model import Pet
 from app.schemas.pet_schema import PetCreate, PetUpdate
 
 
-class PetRepository:
+class PetRepository(Protocol):
+    def add_pet(self, payload: PetCreate) -> Pet: ...
+
+    def get_pets(self) -> list[Pet]: ...
+
+    def get_pet(self, pet_id: int) -> Pet | None: ...
+
+    def update_pet(self, pet_id: int, payload: PetUpdate) -> Pet | None: ...
+
+    def delete_pet(self, pet_id: int) -> bool: ...
+
+
+class SqlaPetRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
 

@@ -1,1 +1,6 @@
-from app.domain.pets import PetBase, PetCreate, PetUpdate, Pet
+from app.domain.pets import (
+    Pet as PetSchema,
+    PetCreate as PetCreateSchema,
+    PetUpdate as PetUpdateSchema,
+    PetBase as PetBaseSchema,
+)

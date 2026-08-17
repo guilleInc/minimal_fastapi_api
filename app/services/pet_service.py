@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.pet_repository import PetRepository
-from app.schemas.pet_schema import Pet, PetCreate, PetUpdate
+from app.domain.pets import Pet, PetCreate, PetUpdate
 
 
 class PetService:

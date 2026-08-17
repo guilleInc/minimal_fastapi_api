@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Protocol
 
 from app.models.pet_model import PetModel
-from app.schemas.pet_schema import Pet, PetCreate, PetUpdate
+from app.domain.pets import Pet, PetCreate, PetUpdate
 
 
 class PetRepository(Protocol):

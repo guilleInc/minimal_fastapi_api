@@ -30,7 +30,7 @@ class SqlaPetRepository:
 
     async def get_pets(self) -> list[PetModel]:
         stmt = select(PetModel)
-        return list(await self.session.scalars(stmt)).all()
+        return list(await self.session.scalars(stmt))
 
     async def get_pet(self, pet_id: int) -> PetModel | None:
         stmt = select(PetModel).where(PetModel.id == pet_id)

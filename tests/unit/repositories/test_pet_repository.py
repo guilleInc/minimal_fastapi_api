@@ -1,7 +1,18 @@
 import pytest
+import pytest_asyncio
+from sqlalchemy import delete
 
+from app.models.pet_model import PetModel
 from app.repositories.pet_repository import SqlaPetRepository
 from app.schemas.pet_schema import PetCreate, PetUpdate
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def clean_pets(session):
+    yield
+
+    await session.execute(delete(PetModel))
+    await session.commit()
 
 
 @pytest.mark.asyncio

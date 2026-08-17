@@ -1,6 +1,11 @@
 from app.domain.pets import (
-    Pet as PetSchema,
-    PetCreate as PetCreateSchema,
-    PetUpdate as PetUpdateSchema,
-    PetBase as PetBaseSchema,
+    Pet,
+    PetCreate,
+    PetUpdate,
+    PetBase,
 )
+
+type PetSchema = Pet
+type PetCreateSchema = PetCreate
+type PetUpdateSchema = PetUpdate
+type PetBaseSchema = PetBase

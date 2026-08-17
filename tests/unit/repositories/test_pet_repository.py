@@ -4,7 +4,7 @@ from sqlalchemy import delete
 
 from app.models.pet_model import PetModel
 from app.repositories.pet_repository import SqlaPetRepository
-from app.schemas.pet_schema import PetCreate, PetUpdate
+from app.domain.pets import PetCreate, PetUpdate
 
 
 @pytest_asyncio.fixture(autouse=True)

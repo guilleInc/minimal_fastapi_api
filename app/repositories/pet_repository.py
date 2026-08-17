@@ -25,7 +25,6 @@ class SqlaPetRepository:
     async def add_pet(self, payload: PetCreate) -> Pet:
         stmt = insert(PetModel).values(**payload.model_dump()).returning(PetModel)
         pet = await self.session.scalar(stmt)
-        await self.session.commit()
         return Pet.model_validate(pet)
 
     async def get_pets(self) -> list[Pet]:
@@ -47,11 +46,9 @@ class SqlaPetRepository:
         update_data = payload.model_dump(exclude_unset=True)
         stmt = update(PetModel).where(PetModel.id == pet_id).values(**update_data).returning(PetModel)
         updated_pet = await self.session.scalar(stmt)
-        await self.session.commit()
         return Pet.model_validate(updated_pet)
 
     async def delete_pet(self, pet_id: int) -> bool:
         stmt = delete(PetModel).where(PetModel.id == pet_id)
         result = await self.session.execute(stmt)
-        await self.session.commit()
         return result.rowcount > 0

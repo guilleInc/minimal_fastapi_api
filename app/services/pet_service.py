@@ -1,7 +1,10 @@
+import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.pet_repository import PetRepository, PetRepositoryError
 from app.domain.pets import Pet, PetCreate, PetUpdate
+
+logger = logging.getLogger(__name__)
 
 
 class PetNotFoundError(Exception):
@@ -23,12 +26,14 @@ class PetService:
             await self.session.commit()
             return pet
         except PetRepositoryError as exc:
+            logger.exception("Failed to add pet")
             raise PetServiceError() from exc
 
     async def get_pets(self) -> list[Pet]:
         try:
             return await self.repository.get_pets()
         except PetRepositoryError as exc:
+            logger.exception("Failed to get pets")
             raise PetServiceError() from exc
 
     async def get_pet(self, pet_id: int) -> Pet:
@@ -38,6 +43,7 @@ class PetService:
                 raise PetNotFoundError()
             return pet
         except PetRepositoryError as exc:
+            logger.exception("Failed to get pet %d", pet_id)
             raise PetServiceError() from exc
 
     async def update_pet(self, pet_id: int, payload: PetUpdate) -> Pet:
@@ -48,6 +54,7 @@ class PetService:
             await self.session.commit()
             return pet
         except PetRepositoryError as exc:
+            logger.exception("Failed to update pet %d", pet_id)
             raise PetServiceError() from exc
 
     async def delete_pet(self, pet_id: int) -> None:
@@ -56,4 +63,5 @@ class PetService:
                 raise PetNotFoundError()
             await self.session.commit()
         except PetRepositoryError as exc:
+            logger.exception("Failed to delete pet %d", pet_id)
             raise PetServiceError() from exc

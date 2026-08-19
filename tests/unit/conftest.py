@@ -1,43 +1,14 @@
-"""Shared fixtures for unit tests."""
+"""Unit test configuration - shared fixtures for all unit tests."""
 
-import pytest
-from unittest.mock import AsyncMock
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-
-from app.routes.pet_router import router as pet_router
-from app.exception_handlers import register_exception_handlers
-from app.services.pet_service import PetService
-from app.dependencies import get_pet_service, get_pet_repository, get_db_session
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 
-@asynccontextmanager
-async def no_lifespan(app: FastAPI):
-    """Empty lifespan for testing to avoid DB initialization."""
-    yield
+@pytest_asyncio.fixture()
+async def session(engine):
+    """Create a new database session for each test."""
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
 
+    async with session_factory() as session:
+        yield session
 
-@pytest.fixture
-def mock_pet_service():
-    """Create a mocked PetService."""
-    return AsyncMock(spec=PetService)
-
-
-@pytest.fixture
-def client(mock_pet_service):
-    """Test client with mocked PetService injected."""
-    # Create a test app without database lifespan
-    test_app = FastAPI(lifespan=no_lifespan)
-    register_exception_handlers(test_app)
-    test_app.include_router(pet_router)
-
-    # Override the dependency functions, not the types
-    test_app.dependency_overrides[get_db_session] = lambda: AsyncMock()
-    test_app.dependency_overrides[get_pet_repository] = lambda: AsyncMock()
-    test_app.dependency_overrides[get_pet_service] = lambda: mock_pet_service
-
-    client = TestClient(test_app)
-    yield client
-
-    test_app.dependency_overrides.clear()

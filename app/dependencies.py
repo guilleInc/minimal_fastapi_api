@@ -9,7 +9,7 @@ from app.repositories.pet_repository import PetRepository, SqlaPetRepository
 from app.services.pet_service import PetService
 
 
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_db_session() -> AsyncGenerator[AsyncSession]:
     async with SessionLocal() as session:
         yield session
 

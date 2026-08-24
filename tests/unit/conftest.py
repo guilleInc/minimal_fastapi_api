@@ -11,4 +11,3 @@ async def session(engine):
 
     async with session_factory() as session:
         yield session
-

@@ -1,15 +1,14 @@
-"""Route test fixtures."""
+from contextlib import asynccontextmanager
+from unittest.mock import AsyncMock
 
 import pytest
-from unittest.mock import AsyncMock
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.routes.pet_router import router as pet_router
+from app.dependencies import get_db_session, get_pet_repository, get_pet_service
 from app.exception_handlers import register_exception_handlers
+from app.routes.pet_router import router as pet_router
 from app.services.pet_service import PetService
-from app.dependencies import get_pet_service, get_pet_repository, get_db_session
 
 
 @asynccontextmanager
@@ -39,5 +38,3 @@ def client(mock_pet_service):
 
     client = TestClient(test_app)
     yield client
-
-    test_app.dependency_overrides.clear()

@@ -1,8 +1,9 @@
 """Integration test configuration with transaction rollback."""
 
-import pytest_asyncio
+import asyncio
+import pytest
 from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
+from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_db_session
@@ -10,27 +11,36 @@ from app.exception_handlers import register_exception_handlers
 from app.routes.pet_router import router as pet_router
 
 
-@pytest_asyncio.fixture()
-async def session(engine):
+@pytest.fixture
+def session(engine):
     """Create a test session wrapped in a transaction.
 
     All session.commit() calls are staged to this transaction.
     At test end, the entire transaction is rolled back,
     leaving the database clean for the next test.
     """
-    connection = await engine.connect()
-    transaction = await connection.begin()
+    # Run async setup in sync context
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-    session = AsyncSession(bind=connection, expire_on_commit=False)
-    yield session
+    try:
+        connection = loop.run_until_complete(engine.connect())
+        transaction = loop.run_until_complete(connection.begin())
 
-    await session.close()
-    await transaction.rollback()
-    await connection.close()
+        session = AsyncSession(bind=connection, expire_on_commit=False)
+        
+        yield session
+
+        loop.run_until_complete(session.close())
+        loop.run_until_complete(transaction.rollback())
+        loop.run_until_complete(connection.close())
+    finally:
+        loop.close()
+        asyncio.set_event_loop(None)
 
 
-@pytest_asyncio.fixture()
-async def test_app(session):
+@pytest.fixture
+def test_app(session):
     """Create FastAPI app with test session injected."""
     app = FastAPI()
     register_exception_handlers(app)
@@ -47,9 +57,7 @@ async def test_app(session):
     app.dependency_overrides.clear()
 
 
-@pytest_asyncio.fixture()
-async def client(test_app):
-    """AsyncClient for making requests to test app."""
-    transport = ASGITransport(app=test_app)
-    async with AsyncClient(transport=transport, base_url="http://test", follow_redirects=False) as http_client:
-        yield http_client
+@pytest.fixture
+def client(test_app):
+    """TestClient for making requests to test app."""
+    return TestClient(test_app, follow_redirects=False)

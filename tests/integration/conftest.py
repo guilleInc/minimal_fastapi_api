@@ -40,24 +40,16 @@ def session(engine):
 
 
 @pytest.fixture
-def test_app(session):
-    """Create FastAPI app with test session injected."""
+def client(session):
+    """TestClient with transaction isolation and test session injected."""
     app = FastAPI()
     register_exception_handlers(app)
     app.include_router(pet_router)
 
-    # Override dependencies to use test session
+    # Override dependency to use test session
     async def override_get_db_session():
         yield session
 
     app.dependency_overrides[get_db_session] = override_get_db_session
 
-    yield app
-
-    app.dependency_overrides.clear()
-
-
-@pytest.fixture
-def client(test_app):
-    """TestClient for making requests to test app."""
-    return TestClient(test_app)
+    return TestClient(app)

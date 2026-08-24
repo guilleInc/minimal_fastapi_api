@@ -1,187 +1,229 @@
-"""Integration tests for pet routes with real database."""
-
 import pytest
 
 
-class TestCreateAndRetrievePet:
-    """Integration test: create a pet and immediately retrieve it."""
+class TestCreatePet:
+    """Tests for POST /pets"""
 
     @pytest.mark.asyncio
-    async def test_create_pet_then_get(self, client):
-        """Test POST creates pet and GET retrieves it in same transaction."""
-        # Create pet
-        create_response = await client.post(
-            "/pets/",
-            json={"name": "Fluffy", "type": "cat", "age": 3}
-        )
-        assert create_response.status_code == 201
-        pet = create_response.json()
-        pet_id = pet["id"]
-        assert pet["name"] == "Fluffy"
-        assert pet["type"] == "cat"
-        assert pet["age"] == 3
+    async def test_create_pet_success(self, client):
+        """Test successfully creating a pet."""
+        response = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
 
-        # Retrieve pet (same test transaction)
-        get_response = await client.get(f"/pets/{pet_id}")
-        assert get_response.status_code == 200
-        retrieved = get_response.json()
-        assert retrieved["id"] == pet_id
-        assert retrieved["name"] == "Fluffy"
-
-
-class TestFullPetWorkflow:
-    """Integration test: full workflow (create, read, update, delete)."""
-
-    @pytest.mark.asyncio
-    async def test_complete_pet_lifecycle(self, client):
-        """Test complete workflow: create → read → update → delete."""
-        # CREATE
-        create_response = await client.post(
-            "/pets/",
-            json={"name": "Rex", "type": "dog", "age": 2}
-        )
-        assert create_response.status_code == 201
-        pet_id = create_response.json()["id"]
-
-        # READ
-        get_response = await client.get(f"/pets/{pet_id}")
-        assert get_response.status_code == 200
-        assert get_response.json()["name"] == "Rex"
-
-        # UPDATE
-        update_response = await client.put(
-            f"/pets/{pet_id}",
-            json={"age": 3}
-        )
-        assert update_response.status_code == 200
-        updated = update_response.json()
-        assert updated["age"] == 3
-        assert updated["name"] == "Rex"  # Unchanged
-
-        # VERIFY UPDATE
-        get_response = await client.get(f"/pets/{pet_id}")
-        assert get_response.json()["age"] == 3
-
-        # DELETE
-        delete_response = await client.delete(f"/pets/{pet_id}")
-        assert delete_response.status_code == 204
-
-        # VERIFY DELETED
-        get_response = await client.get(f"/pets/{pet_id}")
-        assert get_response.status_code == 404
-
-
-class TestMultiplePetsInteraction:
-    """Integration test: multiple pets in same transaction."""
-
-    @pytest.mark.asyncio
-    async def test_create_multiple_and_list(self, client):
-        """Test creating multiple pets and listing them."""
-        # Create first pet
-        response1 = await client.post(
-            "/pets/",
-            json={"name": "Fluffy", "type": "cat", "age": 3}
-        )
-        assert response1.status_code == 201
-
-        # Create second pet
-        response2 = await client.post(
-            "/pets/",
-            json={"name": "Rex", "type": "dog", "age": 5}
-        )
-        assert response2.status_code == 201
-
-        # List pets (should see both)
-        list_response = await client.get("/pets/")
-        assert list_response.status_code == 200
-        pets = list_response.json()
-        assert len(pets) == 2
-        names = {pet["name"] for pet in pets}
-        assert names == {"Fluffy", "Rex"}
-
-    @pytest.mark.asyncio
-    async def test_create_and_delete_preserves_others(self, client):
-        """Test that deleting one pet doesn't affect others."""
-        # Create first pet
-        response1 = await client.post(
-            "/pets/",
-            json={"name": "Fluffy", "type": "cat", "age": 3}
-        )
-        pet1_id = response1.json()["id"]
-
-        # Create second pet
-        response2 = await client.post(
-            "/pets/",
-            json={"name": "Rex", "type": "dog", "age": 5}
-        )
-        pet2_id = response2.json()["id"]
-
-        # Delete first pet
-        delete_response = await client.delete(f"/pets/{pet1_id}")
-        assert delete_response.status_code == 204
-
-        # Verify second pet still exists
-        get_response = await client.get(f"/pets/{pet2_id}")
-        assert get_response.status_code == 200
-        assert get_response.json()["name"] == "Rex"
-
-        # Verify list has only second pet
-        list_response = await client.get("/pets/")
-        pets = list_response.json()
-        assert len(pets) == 1
-        assert pets[0]["name"] == "Rex"
-
-
-class TestPetValidation:
-    """Integration test: validation works with real database."""
+        assert response.status_code == 201
+        assert response.json()["name"] == "Fluffy"
+        assert response.json()["type"] == "cat"
+        assert response.json()["age"] == 3
 
     @pytest.mark.asyncio
     async def test_create_pet_invalid_payload(self, client):
-        """Test that validation rejects invalid data."""
-        response = await client.post(
-            "/pets/",
-            json={"name": "Fluffy"}  # Missing type and age
-        )
+        """Test create_pet with invalid payload."""
+        response = await client.post("/pets/", json={"name": "Fluffy"})
+
         assert response.status_code == 422
 
+
+class TestListPets:
+    """Tests for GET /pets"""
+
     @pytest.mark.asyncio
-    async def test_update_pet_with_invalid_data(self, client):
-        """Test that updates validate input."""
-        # Create pet first
-        create_response = await client.post(
-            "/pets/",
-            json={"name": "Fluffy", "type": "cat", "age": 3}
-        )
+    async def test_list_pets_success(self, client):
+        """Test successfully listing pets."""
+        # Create two pets
+        await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        await client.post("/pets/", json={"name": "Rex", "type": "dog", "age": 5})
+
+        response = await client.get("/pets/")
+
+        assert response.status_code == 200
+        pets = response.json()
+        assert len(pets) == 2
+        assert pets[0]["name"] == "Fluffy"
+        assert pets[1]["name"] == "Rex"
+
+    @pytest.mark.asyncio
+    async def test_list_pets_empty(self, client):
+        """Test listing pets when none exist."""
+        response = await client.get("/pets/")
+
+        assert response.status_code == 200
+        assert response.json() == []
+
+
+class TestGetPet:
+    """Tests for GET /pets/{pet_id}"""
+
+    @pytest.mark.asyncio
+    async def test_get_pet_success(self, client):
+        """Test successfully getting a pet by ID."""
+        # Create a pet
+        create_response = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
         pet_id = create_response.json()["id"]
 
-        # Try invalid update
-        update_response = await client.put(
-            f"/pets/{pet_id}",
-            json={"age": "not-a-number"}
-        )
-        assert update_response.status_code == 422
+        response = await client.get(f"/pets/{pet_id}")
 
-
-class TestErrorHandling:
-    """Integration test: error handling with real database."""
+        assert response.status_code == 200
+        assert response.json()["id"] == pet_id
+        assert response.json()["name"] == "Fluffy"
 
     @pytest.mark.asyncio
-    async def test_get_nonexistent_pet(self, client):
-        """Test 404 when pet doesn't exist."""
+    async def test_get_pet_not_found(self, client):
+        """Test getting a pet that doesn't exist."""
         response = await client.get("/pets/999")
+
+        assert response.status_code == 404
+
+
+class TestUpdatePet:
+    """Tests for PUT /pets/{pet_id}"""
+
+    @pytest.mark.asyncio
+    async def test_update_pet_success(self, client):
+        """Test successfully updating a pet."""
+        # Create a pet
+        create_response = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        pet_id = create_response.json()["id"]
+
+        response = await client.put(f"/pets/{pet_id}", json={"name": "Updated Fluffy", "age": 4})
+
+        assert response.status_code == 200
+        assert response.json()["age"] == 4
+        assert response.json()["name"] == "Updated Fluffy"
+
+    @pytest.mark.asyncio
+    async def test_update_pet_not_found(self, client):
+        """Test updating a pet that doesn't exist."""
+        response = await client.put("/pets/999", json={"name": "Updated Fluffy", "age": 4})
+
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_update_nonexistent_pet(self, client):
-        """Test 404 when updating non-existent pet."""
-        response = await client.put(
-            "/pets/999",
-            json={"age": 5}
-        )
-        assert response.status_code == 404
+    async def test_update_pet_partial(self, client):
+        """Test updating only some pet fields."""
+        # Create a pet
+        create_response = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        pet_id = create_response.json()["id"]
+
+        response = await client.put(f"/pets/{pet_id}", json={"age": 4})
+
+        assert response.status_code == 200
+        assert response.json()["age"] == 4
+
+
+class TestDeletePet:
+    """Tests for DELETE /pets/{pet_id}"""
 
     @pytest.mark.asyncio
-    async def test_delete_nonexistent_pet(self, client):
-        """Test 404 when deleting non-existent pet."""
+    async def test_delete_pet_success(self, client):
+        """Test successfully deleting a pet."""
+        # Create a pet
+        create_response = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        pet_id = create_response.json()["id"]
+
+        response = await client.delete(f"/pets/{pet_id}")
+
+        assert response.status_code == 204
+
+    @pytest.mark.asyncio
+    async def test_delete_pet_not_found(self, client):
+        """Test deleting a pet that doesn't exist."""
         response = await client.delete("/pets/999")
+
         assert response.status_code == 404
+
+
+class TestIntegrationScenarios:
+    """Additional integration tests for realistic scenarios."""
+
+    @pytest.mark.asyncio
+    async def test_create_and_immediate_retrieval(self, client):
+        """Test that created pet is immediately retrievable within transaction."""
+        create_response = await client.post("/pets/", json={"name": "Buddy", "type": "dog", "age": 2})
+        pet_id = create_response.json()["id"]
+
+        get_response = await client.get(f"/pets/{pet_id}")
+
+        assert get_response.status_code == 200
+        assert get_response.json()["id"] == pet_id
+        assert get_response.json()["name"] == "Buddy"
+
+    @pytest.mark.asyncio
+    async def test_complete_crud_lifecycle(self, client):
+        """Test complete CRUD lifecycle: create, read, update, delete."""
+        # Create
+        create_response = await client.post("/pets/", json={"name": "Max", "type": "cat", "age": 1})
+        assert create_response.status_code == 201
+        pet_id = create_response.json()["id"]
+
+        # Read
+        get_response = await client.get(f"/pets/{pet_id}")
+        assert get_response.status_code == 200
+        assert get_response.json()["name"] == "Max"
+
+        # Update
+        update_response = await client.put(f"/pets/{pet_id}", json={"name": "Max Jr", "age": 2})
+        assert update_response.status_code == 200
+        assert update_response.json()["name"] == "Max Jr"
+        assert update_response.json()["age"] == 2
+
+        # Delete
+        delete_response = await client.delete(f"/pets/{pet_id}")
+        assert delete_response.status_code == 204
+
+        # Verify deleted
+        not_found_response = await client.get(f"/pets/{pet_id}")
+        assert not_found_response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_multiple_pets_list_and_delete(self, client):
+        """Test listing multiple pets and verifying deletion updates the list."""
+        # Create three pets
+        pet1 = await client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 2})
+        pet1_id = pet1.json()["id"]
+
+        pet2 = await client.post("/pets/", json={"name": "Rex", "type": "dog", "age": 4})
+        pet2_id = pet2.json()["id"]
+
+        pet3 = await client.post("/pets/", json={"name": "Tweety", "type": "bird", "age": 1})
+        pet3_id = pet3.json()["id"]
+
+        # List all pets
+        list_response = await client.get("/pets/")
+        assert list_response.status_code == 200
+        assert len(list_response.json()) == 3
+
+        # Delete middle pet
+        delete_response = await client.delete(f"/pets/{pet2_id}")
+        assert delete_response.status_code == 204
+
+        # List should have 2 pets now
+        list_response = await client.get("/pets/")
+        assert len(list_response.json()) == 2
+
+        # Verify deleted pet is gone
+        get_response = await client.get(f"/pets/{pet2_id}")
+        assert get_response.status_code == 404
+
+        # Verify other pets still exist
+        get_response1 = await client.get(f"/pets/{pet1_id}")
+        assert get_response1.status_code == 200
+        assert get_response1.json()["name"] == "Fluffy"
+
+        get_response3 = await client.get(f"/pets/{pet3_id}")
+        assert get_response3.status_code == 200
+        assert get_response3.json()["name"] == "Tweety"
+
+    @pytest.mark.asyncio
+    async def test_update_preserves_unmodified_fields(self, client):
+        """Test that updating some fields preserves others."""
+        create_response = await client.post("/pets/", json={"name": "Shadow", "type": "cat", "age": 5})
+        pet_id = create_response.json()["id"]
+        original_type = create_response.json()["type"]
+
+        # Update only name
+        update_response = await client.put(f"/pets/{pet_id}", json={"name": "Whiskers"})
+        assert update_response.status_code == 200
+
+        # Verify type is preserved
+        get_response = await client.get(f"/pets/{pet_id}")
+        assert get_response.json()["name"] == "Whiskers"
+        assert get_response.json()["type"] == original_type

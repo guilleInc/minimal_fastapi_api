@@ -115,9 +115,7 @@ class TestGetPet:
     """Tests for PetService.get_pet()"""
 
     @pytest.mark.asyncio
-    async def test_get_pet_success(
-        self, service: PetService, mock_repository: AsyncMock
-    ) -> None:
+    async def test_get_pet_success(self, service: PetService, mock_repository: AsyncMock) -> None:
         """Test successfully retrieving a pet by ID."""
         pet = Pet(id=1, name="Fluffy", type="cat", age=3)
         mock_repository.get_pet.return_value = pet
@@ -128,9 +126,7 @@ class TestGetPet:
         mock_repository.get_pet.assert_called_once_with(1)
 
     @pytest.mark.asyncio
-    async def test_get_pet_not_found(
-        self, service: PetService, mock_repository: AsyncMock
-    ) -> None:
+    async def test_get_pet_not_found(self, service: PetService, mock_repository: AsyncMock) -> None:
         """Test get_pet raises PetNotFoundError when pet does not exist."""
         mock_repository.get_pet.return_value = None
 

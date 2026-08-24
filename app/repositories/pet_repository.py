@@ -74,11 +74,7 @@ class SqlaPetRepository:
 
     async def delete_pet(self, pet_id: int) -> bool:
         try:
-            stmt = (
-                delete(PetModel)
-                .where(PetModel.id == pet_id)
-                .returning(PetModel.id)
-            )
+            stmt = delete(PetModel).where(PetModel.id == pet_id).returning(PetModel.id)
             result = await self.session.execute(stmt)
             return result.scalar_one_or_none() is not None
         except Exception as exc:

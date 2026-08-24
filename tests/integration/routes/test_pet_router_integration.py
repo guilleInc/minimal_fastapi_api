@@ -1,7 +1,10 @@
+from fastapi.testclient import TestClient
+
+
 class TestCreatePet:
     """Tests for POST /pets"""
 
-    def test_create_pet_success(self, client):
+    def test_create_pet_success(self, client: TestClient) -> None:
         """Test successfully creating a pet."""
         response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
 
@@ -10,7 +13,7 @@ class TestCreatePet:
         assert response.json()["type"] == "cat"
         assert response.json()["age"] == 3
 
-    def test_create_pet_invalid_payload(self, client):
+    def test_create_pet_invalid_payload(self, client: TestClient) -> None:
         """Test create_pet with invalid payload."""
         response = client.post("/pets/", json={"name": "Fluffy"})
 
@@ -20,7 +23,7 @@ class TestCreatePet:
 class TestListPets:
     """Tests for GET /pets"""
 
-    def test_list_pets_success(self, client):
+    def test_list_pets_success(self, client: TestClient) -> None:
         """Test successfully listing pets."""
         # Create two pets
         client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
@@ -34,7 +37,7 @@ class TestListPets:
         assert pets[0]["name"] == "Fluffy"
         assert pets[1]["name"] == "Rex"
 
-    def test_list_pets_empty(self, client):
+    def test_list_pets_empty(self, client: TestClient) -> None:
         """Test listing pets when none exist."""
         response = client.get("/pets/")
 
@@ -45,7 +48,7 @@ class TestListPets:
 class TestGetPet:
     """Tests for GET /pets/{pet_id}"""
 
-    def test_get_pet_success(self, client):
+    def test_get_pet_success(self, client: TestClient) -> None:
         """Test successfully getting a pet by ID."""
         # Create a pet
         create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
@@ -57,7 +60,7 @@ class TestGetPet:
         assert response.json()["id"] == pet_id
         assert response.json()["name"] == "Fluffy"
 
-    def test_get_pet_not_found(self, client):
+    def test_get_pet_not_found(self, client: TestClient) -> None:
         """Test getting a pet that doesn't exist."""
         response = client.get("/pets/999")
 
@@ -67,7 +70,7 @@ class TestGetPet:
 class TestUpdatePet:
     """Tests for PUT /pets/{pet_id}"""
 
-    def test_update_pet_success(self, client):
+    def test_update_pet_success(self, client: TestClient) -> None:
         """Test successfully updating a pet."""
         # Create a pet
         create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
@@ -79,13 +82,13 @@ class TestUpdatePet:
         assert response.json()["age"] == 4
         assert response.json()["name"] == "Updated Fluffy"
 
-    def test_update_pet_not_found(self, client):
+    def test_update_pet_not_found(self, client: TestClient) -> None:
         """Test updating a pet that doesn't exist."""
         response = client.put("/pets/999", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 404
 
-    def test_update_pet_partial(self, client):
+    def test_update_pet_partial(self, client: TestClient) -> None:
         """Test updating only some pet fields."""
         # Create a pet
         create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
@@ -96,7 +99,7 @@ class TestUpdatePet:
         assert response.status_code == 200
         assert response.json()["age"] == 4
 
-    def test_update_preserves_unmodified_fields(self, client):
+    def test_update_preserves_unmodified_fields(self, client: TestClient) -> None:
         """Test that updating some fields preserves others."""
         create_response = client.post("/pets/", json={"name": "Shadow", "type": "cat", "age": 5})
         pet_id = create_response.json()["id"]
@@ -115,7 +118,7 @@ class TestUpdatePet:
 class TestDeletePet:
     """Tests for DELETE /pets/{pet_id}"""
 
-    def test_delete_pet_success(self, client):
+    def test_delete_pet_success(self, client: TestClient) -> None:
         """Test successfully deleting a pet."""
         # Create a pet
         create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
@@ -125,7 +128,7 @@ class TestDeletePet:
 
         assert response.status_code == 204
 
-    def test_delete_pet_not_found(self, client):
+    def test_delete_pet_not_found(self, client: TestClient) -> None:
         """Test deleting a pet that doesn't exist."""
         response = client.delete("/pets/999")
 
@@ -135,7 +138,7 @@ class TestDeletePet:
 class TestIntegrationScenarios:
     """Additional integration tests for realistic scenarios."""
 
-    def test_create_and_immediate_retrieval(self, client):
+    def test_create_and_immediate_retrieval(self, client: TestClient) -> None:
         """Test that created pet is immediately retrievable within transaction."""
         create_response = client.post("/pets/", json={"name": "Buddy", "type": "dog", "age": 2})
         pet_id = create_response.json()["id"]
@@ -146,7 +149,7 @@ class TestIntegrationScenarios:
         assert get_response.json()["id"] == pet_id
         assert get_response.json()["name"] == "Buddy"
 
-    def test_complete_crud_lifecycle(self, client):
+    def test_complete_crud_lifecycle(self, client: TestClient) -> None:
         """Test complete CRUD lifecycle: create, read, update, delete."""
         # Create
         create_response = client.post("/pets/", json={"name": "Max", "type": "cat", "age": 1})
@@ -172,7 +175,7 @@ class TestIntegrationScenarios:
         not_found_response = client.get(f"/pets/{pet_id}")
         assert not_found_response.status_code == 404
 
-    def test_multiple_pets_list_and_delete(self, client):
+    def test_multiple_pets_list_and_delete(self, client: TestClient) -> None:
         """Test listing multiple pets and verifying deletion updates the list."""
         # Create three pets
         pet1 = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 2})

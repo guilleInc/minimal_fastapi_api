@@ -1,9 +1,12 @@
 """Unit tests for PetService."""
 
+from unittest.mock import AsyncMock
+
 import pytest
 
 from app.domain.pets import Pet, PetCreate, PetUpdate
 from app.repositories.pet_repository import PetRepositoryError
+from app.services.pet_service import PetService
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 
@@ -11,7 +14,9 @@ class TestAddPet:
     """Tests for PetService.add_pet()"""
 
     @pytest.mark.asyncio
-    async def test_add_pet_success(self, service, mock_repository, mock_session):
+    async def test_add_pet_success(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test successfully adding a pet."""
         pet_create = PetCreate(name="Fluffy", type="cat", age=3)
         expected_pet = Pet(id=1, name="Fluffy", type="cat", age=3)
@@ -24,7 +29,9 @@ class TestAddPet:
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_add_pet_repository_error(self, service, mock_repository):
+    async def test_add_pet_repository_error(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test add_pet when repository raises PetRepositoryError."""
         pet_create = PetCreate(name="Fluffy", type="cat", age=3)
         mock_repository.add_pet.side_effect = PetRepositoryError("DB error")
@@ -35,7 +42,9 @@ class TestAddPet:
         mock_repository.add_pet.assert_called_once_with(pet_create)
 
     @pytest.mark.asyncio
-    async def test_add_pet_commit_called(self, service, mock_repository, mock_session):
+    async def test_add_pet_commit_called(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is called after adding a pet."""
         pet_create = PetCreate(name="Fluffy", type="cat", age=3)
         expected_pet = Pet(id=1, name="Fluffy", type="cat", age=3)
@@ -50,7 +59,9 @@ class TestGetPets:
     """Tests for PetService.get_pets()"""
 
     @pytest.mark.asyncio
-    async def test_get_pets_success_with_pets(self, service, mock_repository):
+    async def test_get_pets_success_with_pets(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test successfully retrieving a list of pets."""
         pet1 = Pet(id=1, name="Fluffy", type="cat", age=3)
         pet2 = Pet(id=2, name="Whiskers", type="cat", age=5)
@@ -64,7 +75,9 @@ class TestGetPets:
         mock_repository.get_pets.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_pets_success_empty_list(self, service, mock_repository):
+    async def test_get_pets_success_empty_list(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test retrieving an empty list of pets."""
         mock_repository.get_pets.return_value = []
 
@@ -74,7 +87,9 @@ class TestGetPets:
         mock_repository.get_pets.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_pets_repository_error(self, service, mock_repository):
+    async def test_get_pets_repository_error(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test get_pets when repository raises PetRepositoryError."""
         mock_repository.get_pets.side_effect = PetRepositoryError("DB error")
 
@@ -84,7 +99,9 @@ class TestGetPets:
         mock_repository.get_pets.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_pets_no_commit(self, service, mock_repository, mock_session):
+    async def test_get_pets_no_commit(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is NOT called for read operation."""
         pet = Pet(id=1, name="Fluffy", type="cat", age=3)
         mock_repository.get_pets.return_value = [pet]
@@ -98,7 +115,9 @@ class TestGetPet:
     """Tests for PetService.get_pet()"""
 
     @pytest.mark.asyncio
-    async def test_get_pet_success(self, service, mock_repository):
+    async def test_get_pet_success(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test successfully retrieving a pet by ID."""
         pet = Pet(id=1, name="Fluffy", type="cat", age=3)
         mock_repository.get_pet.return_value = pet
@@ -109,7 +128,9 @@ class TestGetPet:
         mock_repository.get_pet.assert_called_once_with(1)
 
     @pytest.mark.asyncio
-    async def test_get_pet_not_found(self, service, mock_repository):
+    async def test_get_pet_not_found(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test get_pet raises PetNotFoundError when pet does not exist."""
         mock_repository.get_pet.return_value = None
 
@@ -119,7 +140,9 @@ class TestGetPet:
         mock_repository.get_pet.assert_called_once_with(999)
 
     @pytest.mark.asyncio
-    async def test_get_pet_repository_error(self, service, mock_repository):
+    async def test_get_pet_repository_error(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test get_pet when repository raises PetRepositoryError."""
         mock_repository.get_pet.side_effect = PetRepositoryError("DB error")
 
@@ -129,7 +152,9 @@ class TestGetPet:
         mock_repository.get_pet.assert_called_once_with(1)
 
     @pytest.mark.asyncio
-    async def test_get_pet_no_commit(self, service, mock_repository, mock_session):
+    async def test_get_pet_no_commit(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is NOT called for read operation."""
         pet = Pet(id=1, name="Fluffy", type="cat", age=3)
         mock_repository.get_pet.return_value = pet
@@ -143,7 +168,9 @@ class TestUpdatePet:
     """Tests for PetService.update_pet()"""
 
     @pytest.mark.asyncio
-    async def test_update_pet_success(self, service, mock_repository, mock_session):
+    async def test_update_pet_success(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test successfully updating a pet."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
         updated_pet = Pet(id=1, name="Updated Fluffy", type="cat", age=4)
@@ -156,7 +183,9 @@ class TestUpdatePet:
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_update_pet_not_found(self, service, mock_repository):
+    async def test_update_pet_not_found(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test update_pet raises PetNotFoundError when pet does not exist."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
         mock_repository.update_pet.return_value = None
@@ -167,7 +196,9 @@ class TestUpdatePet:
         mock_repository.update_pet.assert_called_once_with(999, pet_update)
 
     @pytest.mark.asyncio
-    async def test_update_pet_repository_error(self, service, mock_repository):
+    async def test_update_pet_repository_error(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test update_pet when repository raises PetRepositoryError."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
         mock_repository.update_pet.side_effect = PetRepositoryError("DB error")
@@ -178,7 +209,9 @@ class TestUpdatePet:
         mock_repository.update_pet.assert_called_once_with(1, pet_update)
 
     @pytest.mark.asyncio
-    async def test_update_pet_commit_called(self, service, mock_repository, mock_session):
+    async def test_update_pet_commit_called(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is called after updating a pet."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
         updated_pet = Pet(id=1, name="Updated Fluffy", type="cat", age=4)
@@ -189,7 +222,9 @@ class TestUpdatePet:
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_update_pet_no_commit_on_not_found(self, service, mock_repository, mock_session):
+    async def test_update_pet_no_commit_on_not_found(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is NOT called when pet not found."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
         mock_repository.update_pet.return_value = None
@@ -204,7 +239,9 @@ class TestDeletePet:
     """Tests for PetService.delete_pet()"""
 
     @pytest.mark.asyncio
-    async def test_delete_pet_success(self, service, mock_repository, mock_session):
+    async def test_delete_pet_success(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test successfully deleting a pet."""
         mock_repository.delete_pet.return_value = True
 
@@ -214,7 +251,9 @@ class TestDeletePet:
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_delete_pet_not_found(self, service, mock_repository):
+    async def test_delete_pet_not_found(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test delete_pet raises PetNotFoundError when pet does not exist."""
         mock_repository.delete_pet.return_value = False
 
@@ -224,7 +263,9 @@ class TestDeletePet:
         mock_repository.delete_pet.assert_called_once_with(999)
 
     @pytest.mark.asyncio
-    async def test_delete_pet_repository_error(self, service, mock_repository):
+    async def test_delete_pet_repository_error(
+        self, service: PetService, mock_repository: AsyncMock
+    ) -> None:
         """Test delete_pet when repository raises PetRepositoryError."""
         mock_repository.delete_pet.side_effect = PetRepositoryError("DB error")
 
@@ -234,7 +275,9 @@ class TestDeletePet:
         mock_repository.delete_pet.assert_called_once_with(1)
 
     @pytest.mark.asyncio
-    async def test_delete_pet_commit_called(self, service, mock_repository, mock_session):
+    async def test_delete_pet_commit_called(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is called after deleting a pet."""
         mock_repository.delete_pet.return_value = True
 
@@ -243,7 +286,9 @@ class TestDeletePet:
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_delete_pet_no_commit_on_not_found(self, service, mock_repository, mock_session):
+    async def test_delete_pet_no_commit_on_not_found(
+        self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
+    ) -> None:
         """Test that session.commit() is NOT called when pet not found."""
         mock_repository.delete_pet.return_value = False
 

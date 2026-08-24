@@ -1,13 +1,15 @@
 """Root test configuration."""
 
+from collections.abc import AsyncGenerator
+
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from app.models.base import Base
 
 
 @pytest_asyncio.fixture(scope="session")
-async def engine():
+async def engine() -> AsyncGenerator[AsyncEngine]:
     """Create in-memory SQLite engine for all integration tests."""
     engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
 

@@ -3,7 +3,7 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
-from app.services.pet_service_errors import PetServiceError, PetNotFoundError
+from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 
 async def pet_service_error_handler(

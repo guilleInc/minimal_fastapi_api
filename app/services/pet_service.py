@@ -1,8 +1,9 @@
 import logging
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.pet_repository import PetRepository, PetRepositoryError
 from app.domain.pets import Pet, PetCreate, PetUpdate
+from app.repositories.pet_repository import PetRepository, PetRepositoryError
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 logger = logging.getLogger(__name__)

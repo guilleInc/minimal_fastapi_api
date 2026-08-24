@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.database import engine
+from app.exception_handlers import register_exception_handlers
 from app.models.base import Base
 from app.routes.pet_router import router as pet_router
-from app.exception_handlers import register_exception_handlers
 
 
 @asynccontextmanager

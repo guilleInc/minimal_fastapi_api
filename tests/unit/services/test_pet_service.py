@@ -1,13 +1,11 @@
 """Unit tests for PetService."""
 
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock
 
 from app.domain.pets import Pet, PetCreate, PetUpdate
 from app.repositories.pet_repository import PetRepositoryError
-from app.services.pet_service import PetService
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
-
 
 
 class TestAddPet:

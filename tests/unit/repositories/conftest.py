@@ -1,10 +1,10 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import delete
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.pet_repository import SqlaPetRepository
 from app.models.pet_model import PetModel
+from app.repositories.pet_repository import SqlaPetRepository
 
 
 @pytest.fixture()

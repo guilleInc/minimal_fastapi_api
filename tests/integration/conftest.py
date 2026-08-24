@@ -1,5 +1,6 @@
 
-import pytest, pytest_asyncio
+import pytest
+import pytest_asyncio
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_db_session
 from app.exception_handlers import register_exception_handlers
 from app.routes.pet_router import router as pet_router
+
 
 @pytest_asyncio.fixture
 async def session(engine):

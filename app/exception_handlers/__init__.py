@@ -2,8 +2,8 @@
 
 from fastapi import FastAPI
 
-from app.services.pet_service_errors import PetServiceError
 from app.exception_handlers.pet_exception_handlers import pet_service_error_handler
+from app.services.pet_service_errors import PetServiceError
 
 
 def register_exception_handlers(app: FastAPI) -> None:

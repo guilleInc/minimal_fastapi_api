@@ -1,8 +1,7 @@
 import pytest
 
-from app.models.pet_model import PetModel
-from app.repositories.pet_repository import SqlaPetRepository
 from app.domain.pets import PetCreate, PetUpdate
+from app.repositories.pet_repository import SqlaPetRepository
 
 
 class TestAddPet:

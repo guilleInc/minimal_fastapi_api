@@ -1,7 +1,8 @@
 """Service test fixtures."""
 
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 
 from app.repositories.pet_repository import PetRepository
 from app.services.pet_service import PetService

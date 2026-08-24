@@ -1,9 +1,10 @@
-from sqlalchemy import delete, insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Protocol
 
-from app.models.pet_model import PetModel
+from sqlalchemy import delete, insert, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.domain.pets import Pet, PetCreate, PetUpdate
+from app.models.pet_model import PetModel
 
 
 class PetRepositoryError(Exception):

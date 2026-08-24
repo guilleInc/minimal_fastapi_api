@@ -9,6 +9,7 @@ from app.models.pet_model import PetModel
 
 class PetRepositoryError(Exception):
     """Raised when a pet repository operation fails"""
+
     pass
 
 
@@ -60,7 +61,12 @@ class SqlaPetRepository:
                 return None
 
             update_data = payload.model_dump(exclude_unset=True)
-            stmt = update(PetModel).where(PetModel.id == pet_id).values(**update_data).returning(PetModel)
+            stmt = (
+                update(PetModel)
+                .where(PetModel.id == pet_id)
+                .values(**update_data)
+                .returning(PetModel)
+            )
             updated_pet = await self.session.scalar(stmt)
             return Pet.model_validate(updated_pet)
         except Exception as exc:

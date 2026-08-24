@@ -1,5 +1,3 @@
-
-
 class TestCreatePet:
     """Tests for POST /pets"""
 
@@ -211,4 +209,3 @@ class TestIntegrationScenarios:
         get_response3 = client.get(f"/pets/{pet3_id}")
         assert get_response3.status_code == 200
         assert get_response3.json()["name"] == "Tweety"
-

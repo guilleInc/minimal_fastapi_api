@@ -1,6 +1,5 @@
 """Unit tests for pet routes."""
 
-
 from app.domain.pets import Pet
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 

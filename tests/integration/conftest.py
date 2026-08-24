@@ -1,4 +1,3 @@
-
 import pytest
 import pytest_asyncio
 from fastapi import FastAPI
@@ -15,10 +14,7 @@ async def session(engine):
     connection = await engine.connect()
     transaction = await connection.begin()
 
-    session = AsyncSession(
-        bind=connection,
-        expire_on_commit=False
-    )
+    session = AsyncSession(bind=connection, expire_on_commit=False)
 
     yield session
 

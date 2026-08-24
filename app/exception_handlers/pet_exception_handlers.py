@@ -6,11 +6,9 @@ from fastapi.responses import JSONResponse
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 
-async def pet_service_error_handler(
-    request: Request, exc: PetServiceError
-) -> JSONResponse:
+async def pet_service_error_handler(request: Request, exc: PetServiceError) -> JSONResponse:
     """Handle all PetServiceError exceptions."""
-    
+
     # Check specific exception types
     if isinstance(exc, PetNotFoundError):
         return JSONResponse(
@@ -21,7 +19,7 @@ async def pet_service_error_handler(
                 "details": None,
             },
         )
-    
+
     # Default handler for generic PetServiceError
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -60,4 +60,4 @@ def test_app(session):
 @pytest.fixture
 def client(test_app):
     """TestClient for making requests to test app."""
-    return TestClient(test_app, follow_redirects=False)
+    return TestClient(test_app)

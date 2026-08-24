@@ -9,25 +9,6 @@ from app.services.pet_service import PetService
 from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 
-@pytest.fixture
-def mock_session():
-    """Create a mock AsyncSession."""
-    session = AsyncMock()
-    session.commit = AsyncMock()
-    return session
-
-
-@pytest.fixture
-def mock_repository():
-    """Create a mock PetRepository."""
-    return AsyncMock()
-
-
-@pytest.fixture
-def service(mock_session, mock_repository):
-    """Create a PetService instance with mocked dependencies."""
-    return PetService(session=mock_session, repository=mock_repository)
-
 
 class TestAddPet:
     """Tests for PetService.add_pet()"""

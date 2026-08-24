@@ -99,6 +99,21 @@ class TestUpdatePet:
         assert response.status_code == 200
         assert response.json()["age"] == 4
 
+    def test_update_preserves_unmodified_fields(self, client):
+        """Test that updating some fields preserves others."""
+        create_response = client.post("/pets/", json={"name": "Shadow", "type": "cat", "age": 5})
+        pet_id = create_response.json()["id"]
+        original_type = create_response.json()["type"]
+
+        # Update only name
+        update_response = client.put(f"/pets/{pet_id}", json={"name": "Whiskers"})
+        assert update_response.status_code == 200
+
+        # Verify type is preserved
+        get_response = client.get(f"/pets/{pet_id}")
+        assert get_response.json()["name"] == "Whiskers"
+        assert get_response.json()["type"] == original_type
+
 
 class TestDeletePet:
     """Tests for DELETE /pets/{pet_id}"""
@@ -198,17 +213,3 @@ class TestIntegrationScenarios:
         assert get_response3.status_code == 200
         assert get_response3.json()["name"] == "Tweety"
 
-    def test_update_preserves_unmodified_fields(self, client):
-        """Test that updating some fields preserves others."""
-        create_response = client.post("/pets/", json={"name": "Shadow", "type": "cat", "age": 5})
-        pet_id = create_response.json()["id"]
-        original_type = create_response.json()["type"]
-
-        # Update only name
-        update_response = client.put(f"/pets/{pet_id}", json={"name": "Whiskers"})
-        assert update_response.status_code == 200
-
-        # Verify type is preserved
-        get_response = client.get(f"/pets/{pet_id}")
-        assert get_response.json()["name"] == "Whiskers"
-        assert get_response.json()["type"] == original_type

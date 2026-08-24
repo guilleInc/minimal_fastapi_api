@@ -1,5 +1,3 @@
-"""Route test fixtures."""
-
 import pytest
 from unittest.mock import AsyncMock
 from contextlib import asynccontextmanager
@@ -39,5 +37,3 @@ def client(mock_pet_service):
 
     client = TestClient(test_app)
     yield client
-
-    test_app.dependency_overrides.clear()

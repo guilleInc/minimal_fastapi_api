@@ -6,12 +6,12 @@ from app.schemas.pet_schema import PetCreateSchema, PetSchema, PetUpdateSchema
 router = APIRouter(prefix="/pets", tags=["pets"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_pet(payload: PetCreateSchema, service: PetServiceDep) -> PetSchema:
     return await service.add_pet(payload)
 
 
-@router.get("/")
+@router.get("")
 async def list_pets(service: PetServiceDep) -> list[PetSchema]:
     return await service.get_pets()
 

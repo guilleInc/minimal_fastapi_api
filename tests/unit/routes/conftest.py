@@ -1,3 +1,4 @@
+from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock
 
@@ -12,19 +13,19 @@ from app.services.pet_service import PetService
 
 
 @asynccontextmanager
-async def no_lifespan(app: FastAPI):
+async def no_lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Empty lifespan for testing to avoid DB initialization."""
     yield
 
 
 @pytest.fixture
-def mock_pet_service():
+def mock_pet_service() -> AsyncMock:
     """Create a mocked PetService."""
     return AsyncMock(spec=PetService)
 
 
 @pytest.fixture
-def client(mock_pet_service):
+def client(mock_pet_service: AsyncMock) -> Iterator[TestClient]:
     """Test client with mocked PetService injected."""
     # Create a test app without database lifespan
     test_app = FastAPI(lifespan=no_lifespan)

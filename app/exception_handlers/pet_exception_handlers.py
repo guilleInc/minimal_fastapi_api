@@ -3,10 +3,10 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
-from app.services.pet_service_errors import PetNotFoundError, PetServiceError
+from app.services.pet_service_errors import PetNotFoundError
 
 
-async def pet_service_error_handler(request: Request, exc: PetServiceError) -> JSONResponse:
+async def pet_service_error_handler(request: Request, exc: Exception) -> JSONResponse:
     """Handle all PetServiceError exceptions."""
 
     # Check specific exception types

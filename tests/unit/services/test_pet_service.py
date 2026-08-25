@@ -18,8 +18,12 @@ class TestAddPet:
         self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
     ) -> None:
         """Test successfully adding a pet."""
-        pet_create = PetCreate(name="Fluffy", type="cat", age=3)
-        expected_pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet_create = PetCreate(
+            name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
+        expected_pet = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.add_pet.return_value = expected_pet
 
         result = await service.add_pet(pet_create)
@@ -33,7 +37,9 @@ class TestAddPet:
         self, service: PetService, mock_repository: AsyncMock
     ) -> None:
         """Test add_pet when repository raises PetRepositoryError."""
-        pet_create = PetCreate(name="Fluffy", type="cat", age=3)
+        pet_create = PetCreate(
+            name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.add_pet.side_effect = PetRepositoryError("DB error")
 
         with pytest.raises(PetServiceError):
@@ -46,8 +52,12 @@ class TestAddPet:
         self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
     ) -> None:
         """Test that session.commit() is called after adding a pet."""
-        pet_create = PetCreate(name="Fluffy", type="cat", age=3)
-        expected_pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet_create = PetCreate(
+            name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
+        expected_pet = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.add_pet.return_value = expected_pet
 
         await service.add_pet(pet_create)
@@ -63,8 +73,12 @@ class TestGetPets:
         self, service: PetService, mock_repository: AsyncMock
     ) -> None:
         """Test successfully retrieving a list of pets."""
-        pet1 = Pet(id=1, name="Fluffy", type="cat", age=3)
-        pet2 = Pet(id=2, name="Whiskers", type="cat", age=5)
+        pet1 = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
+        pet2 = Pet(
+            id=2, name="Whiskers", species="cat", breed="Siamese", color="gray", owner_name="Bob", age=5
+        )
         pets = [pet1, pet2]
         mock_repository.get_pets.return_value = pets
 
@@ -103,7 +117,9 @@ class TestGetPets:
         self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
     ) -> None:
         """Test that session.commit() is NOT called for read operation."""
-        pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.get_pets.return_value = [pet]
 
         await service.get_pets()
@@ -117,7 +133,9 @@ class TestGetPet:
     @pytest.mark.asyncio
     async def test_get_pet_success(self, service: PetService, mock_repository: AsyncMock) -> None:
         """Test successfully retrieving a pet by ID."""
-        pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.get_pet.return_value = pet
 
         result = await service.get_pet(pet_id=1)
@@ -152,7 +170,9 @@ class TestGetPet:
         self, service: PetService, mock_repository: AsyncMock, mock_session: AsyncMock
     ) -> None:
         """Test that session.commit() is NOT called for read operation."""
-        pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet = Pet(
+            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+        )
         mock_repository.get_pet.return_value = pet
 
         await service.get_pet(pet_id=1)
@@ -169,7 +189,15 @@ class TestUpdatePet:
     ) -> None:
         """Test successfully updating a pet."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
-        updated_pet = Pet(id=1, name="Updated Fluffy", type="cat", age=4)
+        updated_pet = Pet(
+            id=1,
+            name="Updated Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=4,
+        )
         mock_repository.update_pet.return_value = updated_pet
 
         result = await service.update_pet(pet_id=1, payload=pet_update)
@@ -210,7 +238,15 @@ class TestUpdatePet:
     ) -> None:
         """Test that session.commit() is called after updating a pet."""
         pet_update = PetUpdate(name="Updated Fluffy", age=4)
-        updated_pet = Pet(id=1, name="Updated Fluffy", type="cat", age=4)
+        updated_pet = Pet(
+            id=1,
+            name="Updated Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=4,
+        )
         mock_repository.update_pet.return_value = updated_pet
 
         await service.update_pet(pet_id=1, payload=pet_update)

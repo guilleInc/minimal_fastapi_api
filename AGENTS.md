@@ -62,7 +62,7 @@ Build a very simple CRUD API with FastAPI for pets. Keep the codebase small, rea
 
 ## Commands
 - Install dependencies with `uv sync`
-- Run the app with `uvicorn app.main:app --reload`
+- Run the app with `fastapi dev`
 - Run tests with `pytest`
 - Run linting with `ruff check .`
 

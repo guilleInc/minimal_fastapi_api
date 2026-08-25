@@ -14,7 +14,13 @@ class TestCreatePet:
     def test_create_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully creating a pet."""
         pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_pet_service.add_pet.return_value = pet
 
@@ -68,10 +74,22 @@ class TestListPets:
     def test_list_pets_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully listing pets."""
         pet1 = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         pet2 = Pet(
-            id=2, name="Rex", species="dog", breed="Labrador", color="brown", owner_name="Bob", age=5
+            id=2,
+            name="Rex",
+            species="dog",
+            breed="Labrador",
+            color="brown",
+            owner_name="Bob",
+            age=5,
         )
         mock_pet_service.get_pets.return_value = [pet1, pet2]
 
@@ -107,7 +125,13 @@ class TestGetPet:
     def test_get_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully getting a pet by ID."""
         pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_pet_service.get_pet.return_value = pet
 
@@ -179,7 +203,13 @@ class TestUpdatePet:
     def test_update_pet_partial(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test updating only some pet fields."""
         updated_pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=4
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=4,
         )
         mock_pet_service.update_pet.return_value = updated_pet
 

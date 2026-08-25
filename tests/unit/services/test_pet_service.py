@@ -22,7 +22,13 @@ class TestAddPet:
             name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
         )
         expected_pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_repository.add_pet.return_value = expected_pet
 
@@ -56,7 +62,13 @@ class TestAddPet:
             name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
         )
         expected_pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_repository.add_pet.return_value = expected_pet
 
@@ -74,10 +86,22 @@ class TestGetPets:
     ) -> None:
         """Test successfully retrieving a list of pets."""
         pet1 = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         pet2 = Pet(
-            id=2, name="Whiskers", species="cat", breed="Siamese", color="gray", owner_name="Bob", age=5
+            id=2,
+            name="Whiskers",
+            species="cat",
+            breed="Siamese",
+            color="gray",
+            owner_name="Bob",
+            age=5,
         )
         pets = [pet1, pet2]
         mock_repository.get_pets.return_value = pets
@@ -118,7 +142,13 @@ class TestGetPets:
     ) -> None:
         """Test that session.commit() is NOT called for read operation."""
         pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_repository.get_pets.return_value = [pet]
 
@@ -134,7 +164,13 @@ class TestGetPet:
     async def test_get_pet_success(self, service: PetService, mock_repository: AsyncMock) -> None:
         """Test successfully retrieving a pet by ID."""
         pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_repository.get_pet.return_value = pet
 
@@ -171,7 +207,13 @@ class TestGetPet:
     ) -> None:
         """Test that session.commit() is NOT called for read operation."""
         pet = Pet(
-            id=1, name="Fluffy", species="cat", breed="Persian", color="white", owner_name="Alice", age=3
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
         )
         mock_repository.get_pet.return_value = pet
 

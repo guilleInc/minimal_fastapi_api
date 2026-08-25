@@ -6,11 +6,24 @@ class TestCreatePet:
 
     def test_create_pet_success(self, client: TestClient) -> None:
         """Test successfully creating a pet."""
-        response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        response = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
 
         assert response.status_code == 201
         assert response.json()["name"] == "Fluffy"
-        assert response.json()["type"] == "cat"
+        assert response.json()["species"] == "cat"
+        assert response.json()["breed"] == "Persian"
+        assert response.json()["color"] == "white"
+        assert response.json()["owner_name"] == "Alice"
         assert response.json()["age"] == 3
 
     def test_create_pet_invalid_payload(self, client: TestClient) -> None:
@@ -26,8 +39,28 @@ class TestListPets:
     def test_list_pets_success(self, client: TestClient) -> None:
         """Test successfully listing pets."""
         # Create two pets
-        client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
-        client.post("/pets/", json={"name": "Rex", "type": "dog", "age": 5})
+        client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
+        client.post(
+            "/pets/",
+            json={
+                "name": "Rex",
+                "species": "dog",
+                "breed": "Labrador",
+                "color": "brown",
+                "owner_name": "Bob",
+                "age": 5,
+            },
+        )
 
         response = client.get("/pets/")
 
@@ -51,7 +84,17 @@ class TestGetPet:
     def test_get_pet_success(self, client: TestClient) -> None:
         """Test successfully getting a pet by ID."""
         # Create a pet
-        create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
         pet_id = create_response.json()["id"]
 
         response = client.get(f"/pets/{pet_id}")
@@ -73,7 +116,17 @@ class TestUpdatePet:
     def test_update_pet_success(self, client: TestClient) -> None:
         """Test successfully updating a pet."""
         # Create a pet
-        create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
         pet_id = create_response.json()["id"]
 
         response = client.put(f"/pets/{pet_id}", json={"name": "Updated Fluffy", "age": 4})
@@ -91,7 +144,17 @@ class TestUpdatePet:
     def test_update_pet_partial(self, client: TestClient) -> None:
         """Test updating only some pet fields."""
         # Create a pet
-        create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
         pet_id = create_response.json()["id"]
 
         response = client.put(f"/pets/{pet_id}", json={"age": 4})
@@ -101,18 +164,34 @@ class TestUpdatePet:
 
     def test_update_preserves_unmodified_fields(self, client: TestClient) -> None:
         """Test that updating some fields preserves others."""
-        create_response = client.post("/pets/", json={"name": "Shadow", "type": "cat", "age": 5})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Shadow",
+                "species": "cat",
+                "breed": "Siamese",
+                "color": "cream",
+                "owner_name": "Charlie",
+                "age": 5,
+            },
+        )
         pet_id = create_response.json()["id"]
-        original_type = create_response.json()["type"]
+        original_species = create_response.json()["species"]
+        original_breed = create_response.json()["breed"]
+        original_color = create_response.json()["color"]
+        original_owner = create_response.json()["owner_name"]
 
         # Update only name
         update_response = client.put(f"/pets/{pet_id}", json={"name": "Whiskers"})
         assert update_response.status_code == 200
 
-        # Verify type is preserved
+        # Verify other fields are preserved
         get_response = client.get(f"/pets/{pet_id}")
         assert get_response.json()["name"] == "Whiskers"
-        assert get_response.json()["type"] == original_type
+        assert get_response.json()["species"] == original_species
+        assert get_response.json()["breed"] == original_breed
+        assert get_response.json()["color"] == original_color
+        assert get_response.json()["owner_name"] == original_owner
 
 
 class TestDeletePet:
@@ -121,7 +200,17 @@ class TestDeletePet:
     def test_delete_pet_success(self, client: TestClient) -> None:
         """Test successfully deleting a pet."""
         # Create a pet
-        create_response = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 3})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
         pet_id = create_response.json()["id"]
 
         response = client.delete(f"/pets/{pet_id}")
@@ -140,7 +229,17 @@ class TestIntegrationScenarios:
 
     def test_create_and_immediate_retrieval(self, client: TestClient) -> None:
         """Test that created pet is immediately retrievable within transaction."""
-        create_response = client.post("/pets/", json={"name": "Buddy", "type": "dog", "age": 2})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Buddy",
+                "species": "dog",
+                "breed": "Golden Retriever",
+                "color": "golden",
+                "owner_name": "David",
+                "age": 2,
+            },
+        )
         pet_id = create_response.json()["id"]
 
         get_response = client.get(f"/pets/{pet_id}")
@@ -152,7 +251,17 @@ class TestIntegrationScenarios:
     def test_complete_crud_lifecycle(self, client: TestClient) -> None:
         """Test complete CRUD lifecycle: create, read, update, delete."""
         # Create
-        create_response = client.post("/pets/", json={"name": "Max", "type": "cat", "age": 1})
+        create_response = client.post(
+            "/pets/",
+            json={
+                "name": "Max",
+                "species": "cat",
+                "breed": "Tabby",
+                "color": "orange",
+                "owner_name": "Eve",
+                "age": 1,
+            },
+        )
         assert create_response.status_code == 201
         pet_id = create_response.json()["id"]
 
@@ -178,13 +287,43 @@ class TestIntegrationScenarios:
     def test_multiple_pets_list_and_delete(self, client: TestClient) -> None:
         """Test listing multiple pets and verifying deletion updates the list."""
         # Create three pets
-        pet1 = client.post("/pets/", json={"name": "Fluffy", "type": "cat", "age": 2})
+        pet1 = client.post(
+            "/pets/",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 2,
+            },
+        )
         pet1_id = pet1.json()["id"]
 
-        pet2 = client.post("/pets/", json={"name": "Rex", "type": "dog", "age": 4})
+        pet2 = client.post(
+            "/pets/",
+            json={
+                "name": "Rex",
+                "species": "dog",
+                "breed": "Labrador",
+                "color": "brown",
+                "owner_name": "Bob",
+                "age": 4,
+            },
+        )
         pet2_id = pet2.json()["id"]
 
-        pet3 = client.post("/pets/", json={"name": "Tweety", "type": "bird", "age": 1})
+        pet3 = client.post(
+            "/pets/",
+            json={
+                "name": "Tweety",
+                "species": "bird",
+                "breed": "Parrot",
+                "color": "green",
+                "owner_name": "Frank",
+                "age": 1,
+            },
+        )
         pet3_id = pet3.json()["id"]
 
         # List all pets

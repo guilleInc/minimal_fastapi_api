@@ -13,10 +13,28 @@ class TestCreatePet:
 
     def test_create_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully creating a pet."""
-        pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet = Pet(
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
+        )
         mock_pet_service.add_pet.return_value = pet
 
-        response = client.post("/pets", json={"name": "Fluffy", "type": "cat", "age": 3})
+        response = client.post(
+            "/pets",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
 
         assert response.status_code == 201
         assert response.json()["name"] == "Fluffy"
@@ -29,7 +47,17 @@ class TestCreatePet:
         """Test create_pet when service raises PetServiceError."""
         mock_pet_service.add_pet.side_effect = PetServiceError()
 
-        response = client.post("/pets", json={"name": "Fluffy", "type": "cat", "age": 3})
+        response = client.post(
+            "/pets",
+            json={
+                "name": "Fluffy",
+                "species": "cat",
+                "breed": "Persian",
+                "color": "white",
+                "owner_name": "Alice",
+                "age": 3,
+            },
+        )
 
         assert response.status_code == 500
 
@@ -45,8 +73,24 @@ class TestListPets:
 
     def test_list_pets_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully listing pets."""
-        pet1 = Pet(id=1, name="Fluffy", type="cat", age=3)
-        pet2 = Pet(id=2, name="Rex", type="dog", age=5)
+        pet1 = Pet(
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
+        )
+        pet2 = Pet(
+            id=2,
+            name="Rex",
+            species="dog",
+            breed="Labrador",
+            color="brown",
+            owner_name="Bob",
+            age=5,
+        )
         mock_pet_service.get_pets.return_value = [pet1, pet2]
 
         response = client.get("/pets")
@@ -80,7 +124,15 @@ class TestGetPet:
 
     def test_get_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully getting a pet by ID."""
-        pet = Pet(id=1, name="Fluffy", type="cat", age=3)
+        pet = Pet(
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
+        )
         mock_pet_service.get_pet.return_value = pet
 
         response = client.get("/pets/1")
@@ -112,7 +164,15 @@ class TestUpdatePet:
 
     def test_update_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully updating a pet."""
-        updated_pet = Pet(id=1, name="Updated Fluffy", type="cat", age=4)
+        updated_pet = Pet(
+            id=1,
+            name="Updated Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=4,
+        )
         mock_pet_service.update_pet.return_value = updated_pet
 
         response = client.put("/pets/1", json={"name": "Updated Fluffy", "age": 4})
@@ -142,7 +202,15 @@ class TestUpdatePet:
 
     def test_update_pet_partial(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test updating only some pet fields."""
-        updated_pet = Pet(id=1, name="Fluffy", type="cat", age=4)
+        updated_pet = Pet(
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=4,
+        )
         mock_pet_service.update_pet.return_value = updated_pet
 
         response = client.put("/pets/1", json={"age": 4})

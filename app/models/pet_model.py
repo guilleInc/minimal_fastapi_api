@@ -9,5 +9,8 @@ class PetModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
-    type: Mapped[str] = mapped_column(String(50))
+    species: Mapped[str] = mapped_column(String(50))
+    breed: Mapped[str] = mapped_column(String(100))
+    color: Mapped[str] = mapped_column(String(100))
+    owner_name: Mapped[str] = mapped_column(String(100))
     age: Mapped[int]

@@ -5,7 +5,10 @@ class PetBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     name: str
-    type: str
+    species: str
+    breed: str
+    color: str
+    owner_name: str
     age: int
 
 
@@ -19,5 +22,8 @@ class PetCreate(PetBase):
 
 class PetUpdate(BaseModel):
     name: str | None = None
-    type: str | None = None
+    species: str | None = None
+    breed: str | None = None
+    color: str | None = None
+    owner_name: str | None = None
     age: int | None = None

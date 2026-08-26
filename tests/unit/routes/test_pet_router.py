@@ -160,7 +160,7 @@ class TestGetPet:
 
 
 class TestUpdatePet:
-    """Tests for PUT /pets/{pet_id}"""
+    """Tests for PATCH /pets/{pet_id}"""
 
     def test_update_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully updating a pet."""
@@ -175,7 +175,7 @@ class TestUpdatePet:
         )
         mock_pet_service.update_pet.return_value = updated_pet
 
-        response = client.put("/pets/1", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/pets/1", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4
@@ -186,7 +186,7 @@ class TestUpdatePet:
         """Test updating a pet that doesn't exist."""
         mock_pet_service.update_pet.side_effect = PetNotFoundError()
 
-        response = client.put("/pets/999", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/pets/999", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 404
 
@@ -196,7 +196,7 @@ class TestUpdatePet:
         """Test update_pet when service raises PetServiceError."""
         mock_pet_service.update_pet.side_effect = PetServiceError()
 
-        response = client.put("/pets/1", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/pets/1", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 500
 
@@ -213,7 +213,7 @@ class TestUpdatePet:
         )
         mock_pet_service.update_pet.return_value = updated_pet
 
-        response = client.put("/pets/1", json={"age": 4})
+        response = client.patch("/pets/1", json={"age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4

@@ -37,15 +37,17 @@ class PetUpdateSchema(BaseModel):
         validate_assignment=True,
     )
 
-    name: str = Field(omit_default=True, min_length=1, max_length=100)
-    species: str = Field(omit_default=True, min_length=1, max_length=50)
-    breed: str = Field(omit_default=True, min_length=1, max_length=100)
-    color: str = Field(omit_default=True, min_length=1, max_length=50)
-    owner_name: str = Field(omit_default=True, min_length=1, max_length=100)
-    age: int = Field(omit_default=True, ge=0, le=100)
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    species: str | None = Field(default=None, min_length=1, max_length=50)
+    breed: str | None = Field(default=None, min_length=1, max_length=100)
+    color: str | None = Field(default=None, min_length=1, max_length=50)
+    owner_name: str | None = Field(default=None, min_length=1, max_length=100)
+    age: int | None = Field(default=None, ge=0, le=100)
 
     @model_validator(mode="after")
     def require_one_update_field(self) -> Self:
         if not self.model_fields_set:
             raise ValueError("At least one field must be provided for an update")
+        if any(getattr(self, field) is None for field in self.model_fields_set):
+            raise ValueError("Update fields must not be null")
         return self

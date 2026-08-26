@@ -17,24 +17,28 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_pet(payload: PetCreateSchema, service: PetServiceDep) -> PetSchema:
-    domain_pet = PetCreate.model_validate(payload.model_dump())
-    return PetSchema.model_validate(await service.add_pet(domain_pet))
+    pet_create_payload = PetCreate.model_validate(payload.model_dump())
+    pet = await service.add_pet(pet_create_payload)
+    return PetSchema.model_validate(pet)
 
 
 @router.get("/")
 async def list_pets(service: PetServiceDep) -> list[PetSchema]:
-    return [PetSchema.model_validate(pet) for pet in await service.get_pets()]
+    pets = await service.get_pets()
+    return [PetSchema.model_validate(pet) for pet in pets]
 
 
 @router.get("/{pet_id}")
 async def get_pet(pet_id: int, service: PetServiceDep) -> PetSchema:
-    return PetSchema.model_validate(await service.get_pet(pet_id))
+    pet = await service.get_pet(pet_id)
+    return PetSchema.model_validate(pet)
 
 
 @router.patch("/{pet_id}")
 async def update_pet(pet_id: int, payload: PetUpdateSchema, service: PetServiceDep) -> PetSchema:
-    domain_update = PetUpdate.model_validate(payload.model_dump(exclude_unset=True))
-    return PetSchema.model_validate(await service.update_pet(pet_id, domain_update))
+    pet_update_payload = PetUpdate.model_validate(payload.model_dump(exclude_unset=True))
+    pet = await service.update_pet(pet_id, pet_update_payload)
+    return PetSchema.model_validate(pet)
 
 
 @router.delete("/{pet_id}", status_code=status.HTTP_204_NO_CONTENT)

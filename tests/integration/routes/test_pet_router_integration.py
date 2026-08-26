@@ -111,7 +111,7 @@ class TestGetPet:
 
 
 class TestUpdatePet:
-    """Tests for PUT /pets/{pet_id}"""
+    """Tests for PATCH /pets/{pet_id}"""
 
     def test_update_pet_success(self, client: TestClient) -> None:
         """Test successfully updating a pet."""
@@ -129,7 +129,7 @@ class TestUpdatePet:
         )
         pet_id = create_response.json()["id"]
 
-        response = client.put(f"/pets/{pet_id}", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch(f"/pets/{pet_id}", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4
@@ -137,7 +137,7 @@ class TestUpdatePet:
 
     def test_update_pet_not_found(self, client: TestClient) -> None:
         """Test updating a pet that doesn't exist."""
-        response = client.put("/pets/999", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/pets/999", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 404
 
@@ -157,7 +157,7 @@ class TestUpdatePet:
         )
         pet_id = create_response.json()["id"]
 
-        response = client.put(f"/pets/{pet_id}", json={"age": 4})
+        response = client.patch(f"/pets/{pet_id}", json={"age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4
@@ -182,7 +182,7 @@ class TestUpdatePet:
         original_owner = create_response.json()["owner_name"]
 
         # Update only name
-        update_response = client.put(f"/pets/{pet_id}", json={"name": "Whiskers"})
+        update_response = client.patch(f"/pets/{pet_id}", json={"name": "Whiskers"})
         assert update_response.status_code == 200
 
         # Verify other fields are preserved
@@ -271,7 +271,7 @@ class TestIntegrationScenarios:
         assert get_response.json()["name"] == "Max"
 
         # Update
-        update_response = client.put(f"/pets/{pet_id}", json={"name": "Max Jr", "age": 2})
+        update_response = client.patch(f"/pets/{pet_id}", json={"name": "Max Jr", "age": 2})
         assert update_response.status_code == 200
         assert update_response.json()["name"] == "Max Jr"
         assert update_response.json()["age"] == 2

@@ -25,8 +25,7 @@ class PetSchema(PetBase):
     id: int = Field(ge=1)
 
 
-class PetCreateSchema(PetBase):
-    pass
+class PetCreateSchema(PetBase): ...
 
 
 class PetUpdateSchema(BaseModel):

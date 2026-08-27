@@ -1,28 +1,13 @@
 from collections.abc import AsyncGenerator, Iterator
 
 import pytest
-import pytest_asyncio
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_db_session
 from app.exception_handlers import register_exception_handlers
 from app.routes.pet_router import router as pet_router
-
-
-@pytest_asyncio.fixture
-async def session(engine: AsyncEngine) -> AsyncGenerator[AsyncSession]:
-    connection = await engine.connect()
-    transaction = await connection.begin()
-
-    session = AsyncSession(bind=connection, expire_on_commit=False)
-
-    yield session
-
-    await session.close()
-    await transaction.rollback()
-    await connection.close()
 
 
 @pytest.fixture

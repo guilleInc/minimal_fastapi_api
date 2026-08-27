@@ -1,5 +1,3 @@
-"""Unit tests for pet routes."""
-
 from unittest.mock import AsyncMock
 
 from fastapi.testclient import TestClient

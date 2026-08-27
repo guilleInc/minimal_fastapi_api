@@ -1,6 +1,3 @@
-"""Errors for user service operations."""
-
-
 class UserServiceError(Exception):
     """Base exception for user service operations."""
 

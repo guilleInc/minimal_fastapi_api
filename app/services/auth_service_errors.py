@@ -1,6 +1,3 @@
-"""Errors for authentication service operations."""
-
-
 class AuthServiceError(Exception):
     """Base exception for authentication service operations."""
 

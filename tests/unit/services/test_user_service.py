@@ -1,5 +1,3 @@
-"""Unit tests for UserService."""
-
 from unittest.mock import AsyncMock
 
 import pytest

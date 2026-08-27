@@ -1,5 +1,3 @@
-"""Service test fixtures."""
-
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest

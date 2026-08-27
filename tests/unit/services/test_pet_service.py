@@ -1,5 +1,3 @@
-"""Unit tests for PetService."""
-
 from unittest.mock import AsyncMock
 
 import pytest

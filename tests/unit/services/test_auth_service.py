@@ -1,5 +1,3 @@
-"""Unit tests for AuthService."""
-
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest

@@ -1,5 +1,3 @@
-"""Exception handlers for the API."""
-
 from fastapi import FastAPI
 
 from app.exception_handlers.pet_exception_handlers import pet_service_error_handler

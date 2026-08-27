@@ -1,6 +1,3 @@
-"""Errors for pet service operations."""
-
-
 class PetServiceError(Exception):
     """Base exception for pet service operations."""
 

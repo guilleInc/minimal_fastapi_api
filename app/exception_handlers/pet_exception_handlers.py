@@ -1,5 +1,3 @@
-"""Exception handlers for pet service errors."""
-
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 

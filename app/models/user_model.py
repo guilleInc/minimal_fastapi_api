@@ -12,3 +12,4 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     full_name: Mapped[str] = mapped_column(String(100))
     disabled: Mapped[bool] = mapped_column(Boolean)
+    hashed_password: Mapped[str] = mapped_column(String(255))

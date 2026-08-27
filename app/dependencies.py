@@ -25,7 +25,7 @@ PetRepositoryDep = Annotated[PetRepository, Depends(get_pet_repository)]
 
 
 def get_pet_service(session: SessionDep, repository: PetRepositoryDep) -> PetService:
-    return PetService(session=session, repository=repository)
+    return PetService(session=session, pet_repository=repository)
 
 
 PetServiceDep = Annotated[PetService, Depends(get_pet_service)]

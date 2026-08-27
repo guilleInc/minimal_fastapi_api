@@ -25,4 +25,4 @@ def mock_repository() -> AsyncMock:
 @pytest.fixture
 def service(mock_session: AsyncMock, mock_repository: AsyncMock) -> PetService:
     """Create a PetService instance with mocked dependencies."""
-    return PetService(session=mock_session, repository=mock_repository)
+    return PetService(session=mock_session, pet_repository=mock_repository)

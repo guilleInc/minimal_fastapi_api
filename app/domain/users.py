@@ -12,8 +12,19 @@ class User(UserBase):
     id: int
 
 
+class UserRegister(UserBase):
+    password: str
+
+
+class UserCredentials(BaseModel):
+    id: int
+    username: str
+    email: str
+    hashed_password: str
+
+
 class UserCreate(UserBase):
-    pass
+    hashed_password: str
 
 
 class UserUpdate(BaseModel):

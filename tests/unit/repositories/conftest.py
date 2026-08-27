@@ -6,7 +6,9 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.pet_model import PetModel
+from app.models.user_model import UserModel
 from app.repositories.pet_repository import SqlaPetRepository
+from app.repositories.user_repository import SqlaUserRepository
 
 
 @pytest.fixture()
@@ -15,9 +17,16 @@ def repository(session: AsyncSession) -> SqlaPetRepository:
     return SqlaPetRepository(session=session)
 
 
+@pytest.fixture()
+def user_repository(session: AsyncSession) -> SqlaUserRepository:
+    """Create a user repository instance with test session."""
+    return SqlaUserRepository(session=session)
+
+
 @pytest_asyncio.fixture(autouse=True)
-async def clean_pets(session: AsyncSession) -> AsyncGenerator[None]:
-    """Clean up pets after each test."""
+async def clean_repositories(session: AsyncSession) -> AsyncGenerator[None]:
+    """Clean up repository data after each test."""
     yield
     await session.execute(delete(PetModel))
+    await session.execute(delete(UserModel))
     await session.commit()

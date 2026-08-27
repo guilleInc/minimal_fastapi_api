@@ -12,8 +12,8 @@ from app.repositories.user_repository import SqlaUserRepository
 
 
 @pytest.fixture()
-def repository(session: AsyncSession) -> SqlaPetRepository:
-    """Create a repository instance with test session."""
+def pet_repository(session: AsyncSession) -> SqlaPetRepository:
+    """Create a pet repository instance with test session."""
     return SqlaPetRepository(session=session)
 
 

@@ -1,9 +1,7 @@
-"""Root test configuration."""
-
 from collections.abc import AsyncGenerator
 
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 
 from app.models.base import Base
 
@@ -18,3 +16,17 @@ async def engine() -> AsyncGenerator[AsyncEngine]:
 
     yield engine
     await engine.dispose()
+
+
+@pytest_asyncio.fixture
+async def session(engine: AsyncEngine) -> AsyncGenerator[AsyncSession]:
+    """Create a transactional database session for each test."""
+    connection = await engine.connect()
+    transaction = await connection.begin()
+    session = AsyncSession(bind=connection, expire_on_commit=False)
+
+    yield session
+
+    await session.close()
+    await transaction.rollback()
+    await connection.close()

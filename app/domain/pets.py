@@ -16,8 +16,7 @@ class Pet(PetBase):
     id: int
 
 
-class PetCreate(PetBase):
-    pass
+class PetCreate(PetBase): ...
 
 
 class PetUpdate(BaseModel):

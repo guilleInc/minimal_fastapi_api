@@ -12,13 +12,13 @@ from app.utils import exception_boundary
 class UserRepositoryError(Exception):
     """Raised when a user repository operation fails."""
 
-    pass
+    ...
 
 
 class UserIntegrityError(UserRepositoryError):
     """Raised when a user violates a database integrity constraint."""
 
-    pass
+    ...
 
 
 class UserRepository(Protocol):

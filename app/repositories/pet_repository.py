@@ -11,7 +11,7 @@ from app.utils import exception_boundary
 class PetRepositoryError(Exception):
     """Raised when a pet repository operation fails"""
 
-    pass
+    ...
 
 
 class PetRepository(Protocol):

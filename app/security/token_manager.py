@@ -5,6 +5,10 @@ import jwt
 from pydantic import BaseModel
 
 
+class TokenError(Exception):
+    """Raised when a token cannot be decoded or validated."""
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -35,9 +39,12 @@ class TokenManager:
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
     def decode_access_token(self, token: str) -> dict[str, Any]:
-        return jwt.decode(
-            token,
-            self.secret_key,
-            algorithms=[self.algorithm],
-            options={"require": ["exp", "sub"]},
-        )
+        try:
+            return jwt.decode(
+                token,
+                self.secret_key,
+                algorithms=[self.algorithm],
+                options={"require": ["exp", "name"]},
+            )
+        except jwt.InvalidTokenError as exc:
+            raise TokenError from exc

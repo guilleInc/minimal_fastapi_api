@@ -1,4 +1,4 @@
-.PHONY: install dev run test lint format check
+.PHONY: install dev run generate-access-token test lint format check
 
 install:
 	uv sync
@@ -9,6 +9,9 @@ dev:
 
 run:
 	uv run fastapi run
+
+generate-access-token:
+	uv run python -m app.commands.generate_access_token --name "$(name)" --expires-minutes "$(expires_minutes)"
 
 test:
 	uv run pytest

@@ -8,7 +8,6 @@ from app.security import PasswordHasher
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
 from app.services.pet_service import PetService
-from app.services.user_service import UserService
 
 
 @pytest.fixture()
@@ -35,12 +34,6 @@ def service(mock_session: AsyncMock, mock_repository: AsyncMock) -> PetService:
 def user_mock_repository() -> AsyncMock:
     """Create a mock UserRepository."""
     return AsyncMock(spec=UserRepository)
-
-
-@pytest.fixture()
-def user_service(mock_session: AsyncMock, user_mock_repository: AsyncMock) -> UserService:
-    """Create a UserService instance with mocked dependencies."""
-    return UserService(session=mock_session, user_repository=user_mock_repository)
 
 
 @pytest.fixture()

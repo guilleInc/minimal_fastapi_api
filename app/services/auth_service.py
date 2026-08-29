@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from app.security.token_manager import Token, TokenError, TokenManager
 from app.services.auth_service_errors import InvalidCredentialsError
 
@@ -11,7 +9,7 @@ class AuthService:
     def create_access_token(
         self,
         name: str,
-        expires_delta: timedelta | None = None,
+        expires_delta: int | None = None,
     ) -> Token:
         if not name.strip():
             raise ValueError("Token name cannot be empty")

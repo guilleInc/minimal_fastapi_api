@@ -28,12 +28,12 @@ class TokenManager:
         self.access_token_expire_minutes = access_token_expire_minutes
 
     def create_access_token(
-        self, data: dict[str, Any], expires_delta: timedelta | None = None
+        self, data: dict[str, Any], expires_delta: int | None = None
     ) -> str:
         to_encode = data.copy()
 
         if expires_delta:
-            expire = datetime.now(UTC) + expires_delta
+            expire = datetime.now(UTC) + timedelta(minutes=expires_delta)
         else:
             expire = datetime.now(UTC) + timedelta(minutes=self.access_token_expire_minutes)
 

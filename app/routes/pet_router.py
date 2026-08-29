@@ -1,13 +1,14 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import Response
 
-from app.dependencies import PetServiceDep
+from app.dependencies import PetServiceDep, AuthorizationDep
 from app.domain.pets import PetCreate, PetUpdate
 from app.schemas.pet_schema import PetCreateSchema, PetSchema, PetUpdateSchema
 
 router = APIRouter(
     prefix="/pets",
     tags=["pets"],
+    dependencies=[AuthorizationDep],
     responses={
         status.HTTP_400_BAD_REQUEST: {"description": "Invalid request payload"},
         status.HTTP_404_NOT_FOUND: {"description": "Pet not found"},

@@ -1,5 +1,4 @@
 import argparse
-from datetime import timedelta
 
 from app.security.token_manager import token_manager
 from app.services.auth_service import AuthService

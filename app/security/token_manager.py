@@ -4,8 +4,6 @@ from typing import Any
 import jwt
 from pydantic import BaseModel
 
-from app.settings import settings
-
 
 class TokenError(Exception):
     """Raised when a token cannot be decoded or validated."""
@@ -27,9 +25,7 @@ class TokenManager:
         self.algorithm = algorithm
         self.access_token_expire_minutes = access_token_expire_minutes
 
-    def create_access_token(
-        self, data: dict[str, Any], expires_delta: int | None = None
-    ) -> str:
+    def create_access_token(self, data: dict[str, Any], expires_delta: int | None = None) -> str:
         to_encode = data.copy()
 
         if expires_delta:
@@ -50,6 +46,3 @@ class TokenManager:
             )
         except jwt.InvalidTokenError as exc:
             raise TokenError from exc
-
-
-token_manager = TokenManager(secret_key=settings.jwt_secret_key, algorithm=settings.jwt_algorithm)

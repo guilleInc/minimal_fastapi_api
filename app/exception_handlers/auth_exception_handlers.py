@@ -1,12 +1,8 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
-from app.services.auth_service_errors import InvalidCredentialsError
 
-
-async def invalid_credentials_error_handler(
-    request: Request, exc: InvalidCredentialsError
-) -> JSONResponse:
+async def invalid_credentials_error_handler(request: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
         headers={"WWW-Authenticate": "Bearer"},

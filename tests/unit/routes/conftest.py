@@ -6,10 +6,21 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.dependencies import get_db_session, get_pet_repository, get_pet_service
+from app.dependencies import (
+    get_db_session,
+    get_pet_repository,
+    get_pet_service,
+    verify_access_token,
+)
 from app.exception_handlers import register_exception_handlers
 from app.routes.pet_router import router as pet_router
 from app.services.pet_service import PetService
+
+
+@pytest.fixture
+def test_headers() -> dict:
+    access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test-payload.test-signature"
+    return {"Authorization": f"Bearer {access_token}"}
 
 
 @asynccontextmanager
@@ -36,6 +47,6 @@ def client(mock_pet_service: AsyncMock) -> Iterator[TestClient]:
     test_app.dependency_overrides[get_db_session] = lambda: AsyncMock()
     test_app.dependency_overrides[get_pet_repository] = lambda: AsyncMock()
     test_app.dependency_overrides[get_pet_service] = lambda: mock_pet_service
+    test_app.dependency_overrides[verify_access_token] = lambda: "test_user"
 
-    client = TestClient(test_app)
-    yield client
+    yield TestClient(test_app)

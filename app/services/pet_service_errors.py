@@ -4,4 +4,3 @@ class PetServiceError(Exception):
 
 class PetNotFoundError(PetServiceError):
     """Raised when a pet is not found."""
-

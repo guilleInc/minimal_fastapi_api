@@ -1,6 +1,7 @@
 class AuthServiceError(Exception):
     """Base exception for authentication service operations."""
 
+
 class UserAlreadyExistsError(AuthServiceError):
     """Raised when registering a user that already exists."""
 

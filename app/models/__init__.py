@@ -1,3 +1,3 @@
-from app.models.pet_model import Base, PetModel
+from app.models.pet_model import PetModel
 
 __all__ = ["PetModel"]

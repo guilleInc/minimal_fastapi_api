@@ -1,3 +1,4 @@
+import os
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -48,3 +49,12 @@ class TokenManager:
             )
         except jwt.InvalidTokenError as exc:
             raise TokenError from exc
+
+
+def get_token_manager() -> TokenManager:
+    secret_key = os.environ.get("JWT_SECRET_KEY")
+    if not secret_key:
+        raise RuntimeError("JWT_SECRET_KEY environment variable is required")
+
+    algorithm = os.environ.get("JWT_ALGORITHM", "HS256")
+    return TokenManager(secret_key=secret_key, algorithm=algorithm)

@@ -11,7 +11,7 @@ run:
 	uv run fastapi run
 
 generate-access-token:
-	uv run python -m app.commands.generate_access_token --name "$(name)" --expires-minutes "$(expires_minutes)"
+	uv run python -m cli.generate_access_token --name "$(name)" --expires-minutes "$(expires_minutes)"
 
 test:
 	uv run pytest

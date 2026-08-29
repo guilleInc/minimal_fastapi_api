@@ -1,7 +1,7 @@
 import argparse
 from datetime import timedelta
 
-from app.security.token_manager import get_token_manager
+from app.security.token_manager import token_manager
 from app.services.auth_service import AuthService
 
 
@@ -24,9 +24,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    token = AuthService(token_manager=get_token_manager()).create_access_token(
+    token = AuthService(token_manager=token_manager).create_access_token(
         name=args.name,
-        expires_delta=timedelta(minutes=args.expires_minutes),
+        expires_delta=args.expires_minutes,
     )
     print(token.access_token)
 

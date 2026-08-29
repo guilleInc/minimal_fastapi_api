@@ -8,14 +8,14 @@ class AuthService:
 
     def create_access_token(
         self,
-        name: str,
+        user: str,
         expires_delta: int | None = None,
     ) -> Token:
-        if not name.strip():
-            raise ValueError("Token name cannot be empty")
+        if not user.strip():
+            raise ValueError("User name cannot be empty")
 
         access_token = self.token_manager.create_access_token(
-            {"name": name},
+            {"user": user},
             expires_delta=expires_delta,
         )
         return Token(access_token=access_token, token_type="bearer")
@@ -26,8 +26,8 @@ class AuthService:
         except TokenError as exc:
             raise InvalidCredentialsError() from exc
 
-        name = payload.get("name")
-        if not isinstance(name, str) or not name.strip():
+        user = payload.get("user")
+        if not isinstance(user, str) or not user.strip():
             raise InvalidCredentialsError()
 
-        return name
+        return user

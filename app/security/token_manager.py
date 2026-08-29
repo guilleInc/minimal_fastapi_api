@@ -46,7 +46,7 @@ class TokenManager:
                 token,
                 self.secret_key,
                 algorithms=[self.algorithm],
-                options={"require": ["exp", "name"]},
+                options={"require": ["exp", "user"]},
             )
         except jwt.InvalidTokenError as exc:
             raise TokenError from exc

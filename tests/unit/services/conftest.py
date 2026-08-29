@@ -4,7 +4,6 @@ import pytest
 
 from app.repositories.pet_repository import PetRepository
 from app.repositories.user_repository import UserRepository
-from app.security import PasswordHasher
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
 from app.services.pet_service import PetService
@@ -34,12 +33,6 @@ def service(mock_session: AsyncMock, mock_repository: AsyncMock) -> PetService:
 def user_mock_repository() -> AsyncMock:
     """Create a mock UserRepository."""
     return AsyncMock(spec=UserRepository)
-
-
-@pytest.fixture()
-def mock_password_hasher() -> MagicMock:
-    """Create a mock PasswordHasher."""
-    return MagicMock(spec=PasswordHasher)
 
 
 @pytest.fixture()

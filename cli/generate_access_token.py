@@ -7,9 +7,9 @@ from app.services.auth_service import AuthService
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate an API access token.")
     parser.add_argument(
-      "--name", 
-      required=True, 
-      help="Name associated with the access token."
+        "--user",
+        required=True,
+      help="User associated with the access token."
     )
     parser.add_argument(
         "--expires-minutes",
@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     token = AuthService(token_manager=token_manager).create_access_token(
-        name=args.name,
+        user=args.user,
         expires_delta=args.expires_minutes,
     )
     print(token.access_token)

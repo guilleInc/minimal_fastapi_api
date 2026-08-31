@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-DATABASE_URL = "sqlite+aiosqlite:///./pets.db"
+DATABASE_FILE = "pets.db"
+DATABASE_URL = f"sqlite+aiosqlite:///./{DATABASE_FILE}"
 
 engine = create_async_engine(DATABASE_URL, echo=False, future=True)
 SessionLocal = async_sessionmaker(

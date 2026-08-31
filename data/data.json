@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Luna",
+    "species": "dog",
+    "breed": "Labrador Retriever",
+    "color": "yellow",
+    "owner_name": "Emma Johnson",
+    "age": 4
+  },
+  {
+    "name": "Oliver",
+    "species": "cat",
+    "breed": "Siamese",
+    "color": "cream",
+    "owner_name": "Noah Williams",
+    "age": 2
+  },
+  {
+    "name": "Charlie",
+    "species": "dog",
+    "breed": "Beagle",
+    "color": "tricolor",
+    "owner_name": "Olivia Brown",
+    "age": 6
+  },
+  {
+    "name": "Bella",
+    "species": "cat",
+    "breed": "Maine Coon",
+    "color": "gray",
+    "owner_name": "Liam Jones",
+    "age": 5
+  },
+  {
+    "name": "Milo",
+    "species": "rabbit",
+    "breed": "Holland Lop",
+    "color": "white",
+    "owner_name": "Ava Garcia",
+    "age": 1
+  },
+  {
+    "name": "Daisy",
+    "species": "dog",
+    "breed": "Golden Retriever",
+    "color": "golden",
+    "owner_name": "William Miller",
+    "age": 3
+  },
+  {
+    "name": "Coco",
+    "species": "bird",
+    "breed": "Cockatiel",
+    "color": "gray",
+    "owner_name": "Sophia Davis",
+    "age": 2
+  },
+  {
+    "name": "Max",
+    "species": "dog",
+    "breed": "German Shepherd",
+    "color": "black and tan",
+    "owner_name": "James Rodriguez",
+    "age": 7
+  },
+  {
+    "name": "Nala",
+    "species": "cat",
+    "breed": "Tabby",
+    "color": "brown",
+    "owner_name": "Isabella Martinez",
+    "age": 4
+  },
+  {
+    "name": "Rocky",
+    "species": "dog",
+    "breed": "Boxer",
+    "color": "fawn",
+    "owner_name": "Benjamin Hernandez",
+    "age": 5
+  },
+  {
+    "name": "Ruby",
+    "species": "guinea pig",
+    "breed": "American",
+    "color": "white and brown",
+    "owner_name": "Mia Lopez",
+    "age": 2
+  },
+  {
+    "name": "Teddy",
+    "species": "dog",
+    "breed": "Poodle",
+    "color": "apricot",
+    "owner_name": "Elijah Gonzalez",
+    "age": 8
+  },
+  {
+    "name": "Willow",
+    "species": "cat",
+    "breed": "British Shorthair",
+    "color": "blue",
+    "owner_name": "Charlotte Wilson",
+    "age": 3
+  },
+  {
+    "name": "Buddy",
+    "species": "dog",
+    "breed": "Dachshund",
+    "color": "red",
+    "owner_name": "Lucas Anderson",
+    "age": 6
+  },
+  {
+    "name": "Rosie",
+    "species": "bird",
+    "breed": "Parakeet",
+    "color": "green and yellow",
+    "owner_name": "Amelia Thomas",
+    "age": 1
+  },
+  {
+    "name": "Cooper",
+    "species": "dog",
+    "breed": "Border Collie",
+    "color": "black and white",
+    "owner_name": "Henry Taylor",
+    "age": 4
+  },
+  {
+    "name": "Mochi",
+    "species": "cat",
+    "breed": "Ragdoll",
+    "color": "white and gray",
+    "owner_name": "Harper Moore",
+    "age": 2
+  },
+  {
+    "name": "Finn",
+    "species": "dog",
+    "breed": "Corgi",
+    "color": "red and white",
+    "owner_name": "Alexander Jackson",
+    "age": 3
+  },
+  {
+    "name": "Penny",
+    "species": "rabbit",
+    "breed": "Mini Rex",
+    "color": "black",
+    "owner_name": "Evelyn Martin",
+    "age": 2
+  },
+  {
+    "name": "Simba",
+    "species": "cat",
+    "breed": "Persian",
+    "color": "orange",
+    "owner_name": "Daniel Lee",
+    "age": 6
+  },
+  {
+    "name": "Maple",
+    "species": "dog",
+    "breed": "Australian Shepherd",
+    "color": "merle",
+    "owner_name": "Abigail Perez",
+    "age": 5
+  },
+  {
+    "name": "Archie",
+    "species": "dog",
+    "breed": "French Bulldog",
+    "color": "brindle",
+    "owner_name": "Michael Thompson",
+    "age": 4
+  },
+  {
+    "name": "Hazel",
+    "species": "cat",
+    "breed": "American Shorthair",
+    "color": "silver tabby",
+    "owner_name": "Emily White",
+    "age": 7
+  },
+  {
+    "name": "Biscuit",
+    "species": "dog",
+    "breed": "Shih Tzu",
+    "color": "white and tan",
+    "owner_name": "Matthew Harris",
+    "age": 9
+  },
+  {
+    "name": "Ziggy",
+    "species": "bird",
+    "breed": "Lovebird",
+    "color": "blue and white",
+    "owner_name": "Ella Sanchez",
+    "age": 3
+  },
+  {
+    "name": "Sophie",
+    "species": "dog",
+    "breed": "Cocker Spaniel",
+    "color": "black",
+    "owner_name": "Sebastian Clark",
+    "age": 5
+  },
+  {
+    "name": "Thor",
+    "species": "cat",
+    "breed": "Norwegian Forest Cat",
+    "color": "white and orange",
+    "owner_name": "Elizabeth Ramirez",
+    "age": 4
+  },
+  {
+    "name": "Peanut",
+    "species": "guinea pig",
+    "breed": "Teddy",
+    "color": "golden brown",
+    "owner_name": "Jack Lewis",
+    "age": 1
+  },
+  {
+    "name": "Cleo",
+    "species": "dog",
+    "breed": "Chihuahua",
+    "color": "tan",
+    "owner_name": "Camila Robinson",
+    "age": 6
+  },
+  {
+    "name": "Winston",
+    "species": "cat",
+    "breed": "Scottish Fold",
+    "color": "gray and white",
+    "owner_name": "James Walker",
+    "age": 3
+  }
+]

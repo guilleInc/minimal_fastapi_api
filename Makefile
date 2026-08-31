@@ -1,4 +1,4 @@
-.PHONY: install dev run generate-access-token test lint format check
+.PHONY: install dev run generate-access-token seed-db test lint format check
 
 install:
 	uv sync
@@ -12,6 +12,9 @@ run:
 
 generate-access-token:
 	uv run python -m scripts.generate_access_token --user "$(user)" --expires-minutes "$(expires_minutes)"
+
+seed-db:
+	uv run python -m scripts.seed_db
 
 test:
 	uv run pytest

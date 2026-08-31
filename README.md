@@ -23,6 +23,7 @@ Common commands are also available through `make`:
 make install  # Install dependencies
 make dev      # Start the development server with auto-reload
 make run      # Start the production server
+make seed-db  # Seed the database from data/data.json
 make test     # Run tests
 make lint     # Check code with Ruff
 make format   # Format code with Ruff

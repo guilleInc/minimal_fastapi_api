@@ -5,7 +5,7 @@ from typing import Any
 
 from sqlalchemy import insert
 
-from app.database import DATABASE_FILE, SessionLocal, engine
+from app.database import SessionLocal, engine, settings
 from app.domain.pets import PetCreate
 from app.models.base import Base
 from app.models.pet_model import PetModel
@@ -14,7 +14,7 @@ DATA_FILE = "data/data.json"
 
 
 async def ensure_database() -> None:
-    if os.path.exists(DATABASE_FILE):
+    if os.path.exists(settings.database_file):
         return
 
     async with engine.begin() as connection:

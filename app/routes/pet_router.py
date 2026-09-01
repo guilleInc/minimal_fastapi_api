@@ -11,6 +11,7 @@ router = APIRouter(
     dependencies=[Depends(verify_access_token)],
     responses={
         status.HTTP_400_BAD_REQUEST: {"description": "Invalid request payload"},
+        status.HTTP_401_UNAUTHORIZED: {"description": "Not authenticated"},
         status.HTTP_404_NOT_FOUND: {"description": "Pet not found"},
     },
 )

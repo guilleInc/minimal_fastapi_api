@@ -1,33 +1,35 @@
-import argparse
-
 from app.dependencies import get_settings, get_token_manager
 from app.services.auth_service import AuthService
 
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate an API access token.")
-    parser.add_argument(
-        "--user",
-        required=True,
-        help="User associated with the access token.",
-    )
-    parser.add_argument(
-        "--expires-minutes",
-        type=int,
-        choices=range(1, 30000),
-        default=30,
-        help="Token lifetime in minutes (default: 30).",
-    )
-    return parser.parse_args()
+DEFAULT_EXPIRATION_MINUTES = 30
 
 
 def main() -> None:
-    args = parse_args()
+    print("Generate API access token")
+    user = input("User name: ").strip()
+
+    expiration = input(
+        f"Expiration time in minutes (default: {DEFAULT_EXPIRATION_MINUTES}): "
+    ).strip()
+
+    if not expiration:
+        expires_minutes = DEFAULT_EXPIRATION_MINUTES
+    else:
+        try:
+            expires_minutes = int(expiration)
+        except ValueError as exc:
+            raise ValueError("Expiration time must be a positive integer") from exc
+
+        if expires_minutes <= 0:
+            raise ValueError("Expiration time must be a positive integer")
+
     token = AuthService(token_manager=get_token_manager(get_settings())).create_access_token(
-        user=args.user,
-        expires_delta=args.expires_minutes,
+        user=user,
+        expires_delta=expires_minutes,
     )
-    print(token.access_token)
+
+    print("Access token:")
+    print(f"{token.access_token}")
 
 
 if __name__ == "__main__":

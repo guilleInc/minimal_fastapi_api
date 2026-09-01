@@ -14,7 +14,7 @@ generate-env:
 	uv run python -m scripts.generate_env
 
 generate-access-token:
-	uv run python -m scripts.generate_access_token --user "$(user)" --expires-minutes "$(expires_minutes)"
+	uv run python -m scripts.generate_access_token
 
 seed-db:
 	uv run python -m scripts.seed_db

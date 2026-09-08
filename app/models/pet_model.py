@@ -14,3 +14,4 @@ class PetModel(Base):
     color: Mapped[str] = mapped_column(String(100))
     owner_name: Mapped[str] = mapped_column(String(100))
     age: Mapped[int] = mapped_column(Integer)
+    image_id: Mapped[str | None] = mapped_column(String(255), nullable=True)

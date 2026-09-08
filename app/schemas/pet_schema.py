@@ -23,6 +23,7 @@ class PetSchema(PetBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int = Field(ge=1)
+    image_id: str | None = Field(default=None, max_length=255)
 
 
 class PetCreateSchema(PetBase): ...

@@ -14,6 +14,7 @@ class PetBase(BaseModel):
 
 class Pet(PetBase):
     id: int
+    image_id: str | None = None
 
 
 class PetCreate(PetBase): ...

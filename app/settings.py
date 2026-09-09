@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     environment: str = "development"
     database_file: str = "pets.db"
+    image_upload_dir: str = "uploads/pets"
+    image_max_size_bytes: int = 5 * 1024 * 1024
 
     @property
     def database_url(self) -> str:

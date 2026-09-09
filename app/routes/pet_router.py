@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, UploadFile, status
 from fastapi.responses import Response
 
-from app.dependencies import PetServiceDep, verify_access_token
+from app.dependencies import PetImageServiceDep, PetServiceDep, verify_access_token
 from app.domain.pets import PetCreate, PetUpdate
 from app.schemas.pet_schema import PetCreateSchema, PetSchema, PetUpdateSchema
 
@@ -48,6 +48,21 @@ async def delete_pet(pet_id: int, service: PetServiceDep) -> None:
     await service.delete_pet(pet_id)
 
 
+@router.post("/{pet_id}/image")
+async def add_pet_image(
+    pet_id: int,
+    image: UploadFile,
+    service: PetImageServiceDep,
+) -> PetSchema:
+    pet = await service.add_image(pet_id, image)
+    return PetSchema.model_validate(pet)
+
+
+@router.delete("/{pet_id}/image", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_pet_image(pet_id: int, service: PetImageServiceDep) -> None:
+    await service.delete_image(pet_id)
+
+
 @router.options("/", include_in_schema=False)
 async def options_pets() -> Response:
     return Response(
@@ -60,5 +75,5 @@ async def options_pets() -> Response:
 async def options_pet_item() -> Response:
     return Response(
         status_code=status.HTTP_204_NO_CONTENT,
-        headers={"Allow": "DELETE, GET, PATCH, OPTIONS"},
+        headers={"Allow": "DELETE, GET, PATCH, POST, OPTIONS"},
     )

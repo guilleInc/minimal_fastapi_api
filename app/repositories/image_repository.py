@@ -27,6 +27,7 @@ class FileSystemImageRepository:
         image_max_size_bytes: int,
     ) -> None:
         self.directory = Path(image_upload_dir)
+        self.directory.mkdir(parents=True, exist_ok=True)
         self.max_size_bytes = image_max_size_bytes
 
     @exception_boundary(ImageRepositoryError)

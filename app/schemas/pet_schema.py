@@ -1,6 +1,6 @@
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 
 class PetBase(BaseModel):
@@ -23,7 +23,14 @@ class PetSchema(PetBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int = Field(ge=1)
-    image_id: str | None = Field(default=None, max_length=255)
+    image_id: str | None = Field(default=None, max_length=255, exclude=True)
+
+    @computed_field
+    @property
+    def image_url(self) -> str | None:
+        if self.image_id is None:
+            return None
+        return f"/uploads/pets/{self.image_id}.webp"
 
 
 class PetCreateSchema(PetBase): ...

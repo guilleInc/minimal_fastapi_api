@@ -23,7 +23,7 @@ class PetRepository(Protocol):
 
     async def update_pet(self, pet_id: int, payload: PetUpdate) -> Pet | None: ...
 
-    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet | None: ...
+    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet: ...
 
     async def delete_pet(self, pet_id: int) -> bool: ...
 
@@ -71,7 +71,7 @@ class SqlaPetRepository:
         return result.scalar_one_or_none() is not None
 
     @exception_boundary(PetRepositoryError)
-    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet | None:
+    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet:
         stmt = (
             update(PetModel)
             .where(PetModel.id == pet_id)
@@ -79,4 +79,6 @@ class SqlaPetRepository:
             .returning(PetModel)
         )
         pet = await self.session.scalar(stmt)
-        return Pet.model_validate(pet) if pet else None
+        if pet is None:
+            raise PetRepositoryError("Pet was not updated")
+        return Pet.model_validate(pet)

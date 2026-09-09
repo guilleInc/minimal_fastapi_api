@@ -29,8 +29,6 @@ class PetImageService:
 
         try:
             updated_pet = await self.pet_repository.update_image_id(pet_id, image_id)
-            if updated_pet is None:
-                raise PetNotFoundError()
             await self.session.commit()
         except Exception:
             await self.image_repository.delete(image_id)
@@ -49,8 +47,6 @@ class PetImageService:
         if pet.image_id is None:
             return
 
-        updated_pet = await self.pet_repository.update_image_id(pet_id, None)
-        if updated_pet is None:
-            raise PetNotFoundError()
+        await self.pet_repository.update_image_id(pet_id, None)
         await self.session.commit()
         await self.image_repository.delete(pet.image_id)

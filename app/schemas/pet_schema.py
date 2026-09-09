@@ -26,7 +26,6 @@ class PetSchema(PetBase):
     image_id: str | None = Field(default=None, max_length=255, exclude=True)
 
     @computed_field
-    @property
     def image_url(self) -> str | None:
         if self.image_id is None:
             return None

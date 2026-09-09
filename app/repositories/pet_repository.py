@@ -23,6 +23,8 @@ class PetRepository(Protocol):
 
     async def update_pet(self, pet_id: int, payload: PetUpdate) -> Pet | None: ...
 
+    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet | None: ...
+
     async def delete_pet(self, pet_id: int) -> bool: ...
 
 
@@ -67,3 +69,14 @@ class SqlaPetRepository:
         stmt = delete(PetModel).where(PetModel.id == pet_id).returning(PetModel.id)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none() is not None
+
+    @exception_boundary(PetRepositoryError)
+    async def update_image_id(self, pet_id: int, image_id: str | None) -> Pet | None:
+        stmt = (
+            update(PetModel)
+            .where(PetModel.id == pet_id)
+            .values(image_id=image_id)
+            .returning(PetModel)
+        )
+        pet = await self.session.scalar(stmt)
+        return Pet.model_validate(pet) if pet else None

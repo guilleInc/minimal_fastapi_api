@@ -7,9 +7,14 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import SessionLocal
+from app.repositories.image_repository import (
+    FileSystemImageRepository,
+    ImageRepository,
+)
 from app.repositories.pet_repository import PetRepository, SqlaPetRepository
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
+from app.services.pet_image_service import PetImageService
 from app.services.pet_service import PetService
 from app.settings import Settings
 
@@ -67,8 +72,36 @@ def get_pet_repository(session: SessionDep) -> PetRepository:
 PetRepositoryDep = Annotated[PetRepository, Depends(get_pet_repository)]
 
 
-def get_pet_service(session: SessionDep, repository: PetRepositoryDep) -> PetService:
+def get_image_repository(settings: SettingsDep) -> ImageRepository:
+    return FileSystemImageRepository(
+        image_upload_dir=settings.image_upload_dir,
+        image_max_size_bytes=settings.image_max_size_bytes,
+    )
+
+
+ImageRepositoryDep = Annotated[ImageRepository, Depends(get_image_repository)]
+
+
+def get_pet_service(
+    session: SessionDep,
+    repository: PetRepositoryDep,
+) -> PetService:
     return PetService(session=session, pet_repository=repository)
 
 
 PetServiceDep = Annotated[PetService, Depends(get_pet_service)]
+
+
+def get_pet_image_service(
+    session: SessionDep,
+    pet_repository: PetRepositoryDep,
+    image_repository: ImageRepositoryDep,
+) -> PetImageService:
+    return PetImageService(
+        session=session,
+        pet_repository=pet_repository,
+        image_repository=image_repository,
+    )
+
+
+PetImageServiceDep = Annotated[PetImageService, Depends(get_pet_image_service)]

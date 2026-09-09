@@ -13,11 +13,6 @@ class Settings(BaseSettings):
     database_file: str = "pets.db"
     image_upload_dir: str = "uploads/pets"
     image_max_size_bytes: int = 5 * 1024 * 1024
-    image_allowed_types: tuple[str, ...] = (
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-    )
 
     @property
     def database_url(self) -> str:

@@ -7,10 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.database import engine
-from app.dependencies import get_settings
 from app.exception_handlers import register_exception_handlers
 from app.models.base import Base
 from app.routes.router import router
+from app.settings import settings
 
 
 @asynccontextmanager
@@ -22,7 +22,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
 
 app = FastAPI(lifespan=lifespan)
 
-settings = get_settings()
 Path(settings.image_upload_dir).mkdir(parents=True, exist_ok=True)
 app.mount(
     "/uploads/pets",

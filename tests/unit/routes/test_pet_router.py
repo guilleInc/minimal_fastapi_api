@@ -138,6 +138,32 @@ class TestGetPet:
         assert response.status_code == 200
         assert response.json()["id"] == 1
         assert response.json()["name"] == "Fluffy"
+        assert response.json()["image_url"] is None
+        mock_pet_service.get_pet.assert_called_once_with(1)
+
+    def test_get_pet_image_url(
+        self,
+        client: TestClient,
+        mock_pet_service: AsyncMock,
+        image_url_prefix: str,
+    ) -> None:
+        """Test returning the complete image URL for a pet."""
+        pet = Pet(
+            id=1,
+            name="Fluffy",
+            species="cat",
+            breed="Persian",
+            color="white",
+            owner_name="Alice",
+            age=3,
+            image_id="image-123",
+        )
+        mock_pet_service.get_pet.return_value = pet
+
+        response = client.get("/pets/1")
+
+        assert response.status_code == 200
+        assert response.json()["image_url"] == f"{image_url_prefix}/image-123.webp"
         mock_pet_service.get_pet.assert_called_once_with(1)
 
     def test_get_pet_not_found(self, client: TestClient, mock_pet_service: AsyncMock) -> None:

@@ -7,6 +7,7 @@ ENVIRONMENT_VARIABLES = [
     f"JWT_SECRET_KEY={token_urlsafe(32)}",
     "JWT_ALGORITHM=HS256",
     "DATABASE_FILE=pets.db",
+    "IMAGE_URL_PREFIX=http://localhost:8000/uploads/pets",
 ]
 
 

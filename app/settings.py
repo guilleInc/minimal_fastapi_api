@@ -17,3 +17,6 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         return f"sqlite+aiosqlite:///./{self.database_file}"
+
+
+settings = Settings()

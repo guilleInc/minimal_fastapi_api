@@ -15,12 +15,18 @@ from app.dependencies import (
 from app.exception_handlers import register_exception_handlers
 from app.routes.router import router
 from app.services.pet_service import PetService
+from app.settings import settings
 
 
 @pytest.fixture
 def test_headers() -> dict:
     access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test-payload.test-signature"
     return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+def image_url_prefix() -> str:
+    return settings.image_url_prefix
 
 
 @asynccontextmanager

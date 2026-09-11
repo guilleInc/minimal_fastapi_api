@@ -13,7 +13,8 @@ ENVIRONMENT_VARIABLES = [
 
 def main() -> None:
     if ENV_FILE.exists():
-        raise FileExistsError(f"{ENV_FILE} already exists; remove it before generating a new one")
+        print(f"{ENV_FILE} already exists; skipping generation")
+        return
 
     ENV_FILE.write_text(
         "\n".join([*ENVIRONMENT_VARIABLES, ""]),

@@ -2,6 +2,8 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
+from app.settings import settings
+
 
 class PetBase(BaseModel):
     model_config = ConfigDict(
@@ -29,7 +31,7 @@ class PetSchema(PetBase):
     def image_url(self) -> str | None:
         if self.image_id is None:
             return None
-        return f"/uploads/pets/{self.image_id}.webp"
+        return f"{settings.image_url_prefix}/{self.image_id}.webp"
 
 
 class PetCreateSchema(PetBase): ...

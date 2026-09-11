@@ -1,9 +1,16 @@
 from collections.abc import AsyncGenerator
 
+import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 
 from app.models.base import Base
+from app.settings import settings
+
+
+@pytest.fixture
+def image_url_prefix() -> str:
+    return settings.image_url_prefix
 
 
 @pytest_asyncio.fixture(scope="session")

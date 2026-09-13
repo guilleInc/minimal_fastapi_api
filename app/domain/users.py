@@ -13,12 +13,12 @@ class User(UserBase):
     id: int
 
 
-class UserCreate(BaseModel):
+class UserIn(BaseModel):
     username: str
     password: str
 
 
-class UserCreateDB(BaseModel):
+class UserInDB(BaseModel):
     username: str
     password_hash: str
     is_active: bool

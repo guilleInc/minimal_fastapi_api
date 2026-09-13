@@ -3,7 +3,7 @@ from typing import Protocol
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.users import User, UserCreateDB
+from app.domain.users import User, UserInDB
 from app.models.user_model import UserModel
 from app.utils import exception_boundary
 
@@ -15,7 +15,7 @@ class UserRepositoryError(Exception):
 
 
 class UserRepository(Protocol):
-    async def add_user(self, payload: UserCreateDB) -> User: ...
+    async def add_user(self, payload: UserInDB) -> User: ...
 
     async def get_user_by_username(self, username: str) -> User | None: ...
 
@@ -31,7 +31,7 @@ class SqlaUserRepository:
         self.session = session
 
     @exception_boundary(UserRepositoryError)
-    async def add_user(self, payload: UserCreateDB) -> User:
+    async def add_user(self, payload: UserInDB) -> User:
         stmt = insert(UserModel).values(**payload.model_dump()).returning(UserModel)
         user = await self.session.scalar(stmt)
         return User.model_validate(user)

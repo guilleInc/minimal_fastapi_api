@@ -1,34 +1,31 @@
-from pwdlib import PasswordHash
-
 from app.domain.users import UserIn
 from app.repositories.user_repository import UserRepository
+from app.security.password_hasher import PasswordHasher
 from app.security.token_manager import Token, TokenError, TokenManager
 from app.services.auth_service_errors import InvalidCredentialsError
-
-password_hash = PasswordHash.recommended()
 
 
 class AuthService:
     def __init__(
         self,
         token_manager: TokenManager,
-        user_repository: UserRepository | None = None,
+        password_hasher: PasswordHasher,
+        user_repository: UserRepository,
     ) -> None:
         self.token_manager = token_manager
+        self.password_hasher = password_hasher
         self.user_repository = user_repository
 
     async def authenticate_user(self, payload: UserIn) -> Token:
-        if self.user_repository is None:
-            raise InvalidCredentialsError()
-
         user = await self.user_repository.get_user_by_username(payload.username)
+        if not user:
+            raise InvalidCredentialsError("User not found")
 
-        if (
-            not user
-            or not user.is_active
-            or not password_hash.verify(payload.password, user.password_hash)
-        ):
-            raise InvalidCredentialsError()
+        if not user.is_active:
+            raise InvalidCredentialsError("User is inactive")
+
+        if not self.password_hasher.verify(payload.password, user.password_hash):
+            raise InvalidCredentialsError("Invalid password")
 
         return self.create_access_token(user.username)
 

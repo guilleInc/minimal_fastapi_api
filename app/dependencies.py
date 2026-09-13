@@ -13,6 +13,7 @@ from app.repositories.image_repository import (
 )
 from app.repositories.pet_repository import PetRepository, SqlaPetRepository
 from app.repositories.user_repository import SqlaUserRepository, UserRepository
+from app.security.password_hasher import PasswordHasher
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
 from app.services.pet_image_service import PetImageService
@@ -49,6 +50,13 @@ def get_token_manager(settings: SettingsDep) -> TokenManager:
 TokenManagerDep = Annotated[TokenManager, Depends(get_token_manager)]
 
 
+def get_password_hasher() -> PasswordHasher:
+    return PasswordHasher()
+
+
+PasswordHasherDep = Annotated[PasswordHasher, Depends(get_password_hasher)]
+
+
 def get_user_repository(session: SessionDep) -> UserRepository:
     return SqlaUserRepository(session=session)
 
@@ -58,9 +66,14 @@ UserRepositoryDep = Annotated[UserRepository, Depends(get_user_repository)]
 
 def get_auth_service(
     token_manager: TokenManagerDep,
+    password_hasher: PasswordHasherDep,
     user_repository: UserRepositoryDep,
 ) -> AuthService:
-    return AuthService(token_manager=token_manager, user_repository=user_repository)
+    return AuthService(
+        token_manager=token_manager,
+        password_hasher=password_hasher,
+        user_repository=user_repository,
+    )
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]

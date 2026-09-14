@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import SessionLocal
@@ -36,11 +36,9 @@ async def get_db_session() -> AsyncGenerator[AsyncSession]:
 
 SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 
-security = HTTPBearer()
-AccessTokenDep = Annotated[
-    HTTPAuthorizationCredentials,
-    Depends(security),
-]
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+AccessTokenDep = Annotated[str, Depends(oauth2_scheme)]
+PasswordRequestForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 def get_token_manager(settings: SettingsDep) -> TokenManager:
@@ -83,7 +81,7 @@ def verify_access_token(
     access_token: AccessTokenDep,
     service: AuthServiceDep,
 ) -> str:
-    return service.verify_access_token(access_token.credentials)
+    return service.verify_access_token(access_token)
 
 
 AuthorizationDep = Annotated[str, Depends(verify_access_token)]

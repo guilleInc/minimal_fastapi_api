@@ -7,10 +7,13 @@ from sqlalchemy import insert
 
 from app.database import SessionLocal, engine, settings
 from app.domain.pets import PetCreate
+from app.models import PetModel, UserModel
 from app.models.base import Base
-from app.models.pet_model import PetModel
+from app.security.password_hasher import PasswordHasher
 
 DATA_FILE = "data/data.json"
+
+password_hasher = PasswordHasher()
 
 
 async def ensure_database() -> None:
@@ -38,8 +41,23 @@ async def insert_pets(pets: list[dict[str, Any]]) -> int:
     return len(pets)
 
 
+async def create_admin_user() -> None:
+    password = "admin"
+
+    async with SessionLocal.begin() as session:
+        await session.execute(
+            insert(UserModel),
+            {
+                "username": "admin",
+                "password_hash": password_hasher.hash(password),
+                "is_active": True,
+            },
+        )
+
+
 async def seed_db() -> int:
     await ensure_database()
+    await create_admin_user()
     pets = load_pets()
     return await insert_pets(pets)
 

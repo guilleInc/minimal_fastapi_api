@@ -3,7 +3,7 @@ import json
 import os
 from typing import Any
 
-from sqlalchemy import insert
+from sqlalchemy.dialects.sqlite import insert
 
 from app.database import SessionLocal, engine, settings
 from app.domain.pets import PetCreate
@@ -45,14 +45,13 @@ async def create_admin_user() -> None:
     password = "admin"
 
     async with SessionLocal.begin() as session:
-        await session.execute(
-            insert(UserModel),
-            {
-                "username": "admin",
-                "password_hash": password_hasher.hash(password),
-                "is_active": True,
-            },
+        stmt = insert(UserModel).values(
+            username="admin",
+            password_hash=password_hasher.hash(password),
+            is_active=True,
         )
+        stmt = stmt.on_conflict_do_nothing(index_elements=["username"])
+        await session.execute(stmt)
 
 
 async def seed_db() -> int:

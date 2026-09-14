@@ -3,6 +3,8 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from app.repositories.pet_repository import PetRepository
+from app.repositories.user_repository import UserRepository
+from app.security.password_hasher import PasswordHasher
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
 from app.services.pet_service import PetService
@@ -35,6 +37,20 @@ def mock_token_manager() -> MagicMock:
 
 
 @pytest.fixture()
-def auth_service(mock_token_manager: MagicMock) -> AuthService:
+def mock_password_hasher() -> MagicMock:
+    """Create a mock PasswordHasher."""
+    return MagicMock(spec=PasswordHasher)
+
+
+@pytest.fixture()
+def auth_service(
+    mock_token_manager: MagicMock,
+    mock_password_hasher: MagicMock,
+) -> AuthService:
     """Create an AuthService instance with mocked dependencies."""
-    return AuthService(token_manager=mock_token_manager)
+    user_repository = AsyncMock(spec=UserRepository)
+    return AuthService(
+        token_manager=mock_token_manager,
+        password_hasher=mock_password_hasher,
+        user_repository=user_repository,
+    )

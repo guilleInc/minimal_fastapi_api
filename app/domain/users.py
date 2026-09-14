@@ -5,34 +5,20 @@ class UserBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     username: str
-    email: str
-    full_name: str
-    disabled: bool
+    password_hash: str
+    is_active: bool = True
 
 
 class User(UserBase):
     id: int
 
 
-class UserRegister(UserBase):
+class UserIn(BaseModel):
+    username: str
     password: str
 
 
-class UserCredentials(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
+class UserInDB(BaseModel):
     username: str
-    email: str
-    hashed_password: str
-
-
-class UserCreate(UserBase):
-    hashed_password: str
-
-
-class UserUpdate(BaseModel):
-    username: str | None = None
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
+    password_hash: str
+    is_active: bool

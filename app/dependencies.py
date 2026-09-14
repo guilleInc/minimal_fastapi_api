@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import SessionLocal
@@ -12,6 +12,8 @@ from app.repositories.image_repository import (
     ImageRepository,
 )
 from app.repositories.pet_repository import PetRepository, SqlaPetRepository
+from app.repositories.user_repository import SqlaUserRepository, UserRepository
+from app.security.password_hasher import PasswordHasher
 from app.security.token_manager import TokenManager
 from app.services.auth_service import AuthService
 from app.services.pet_image_service import PetImageService
@@ -34,11 +36,9 @@ async def get_db_session() -> AsyncGenerator[AsyncSession]:
 
 SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 
-security = HTTPBearer()
-AccessTokenDep = Annotated[
-    HTTPAuthorizationCredentials,
-    Depends(security),
-]
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+AccessTokenDep = Annotated[str, Depends(oauth2_scheme)]
+PasswordRequestForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 def get_token_manager(settings: SettingsDep) -> TokenManager:
@@ -48,8 +48,30 @@ def get_token_manager(settings: SettingsDep) -> TokenManager:
 TokenManagerDep = Annotated[TokenManager, Depends(get_token_manager)]
 
 
-def get_auth_service(token_manager: TokenManagerDep) -> AuthService:
-    return AuthService(token_manager=token_manager)
+def get_password_hasher() -> PasswordHasher:
+    return PasswordHasher()
+
+
+PasswordHasherDep = Annotated[PasswordHasher, Depends(get_password_hasher)]
+
+
+def get_user_repository(session: SessionDep) -> UserRepository:
+    return SqlaUserRepository(session=session)
+
+
+UserRepositoryDep = Annotated[UserRepository, Depends(get_user_repository)]
+
+
+def get_auth_service(
+    token_manager: TokenManagerDep,
+    password_hasher: PasswordHasherDep,
+    user_repository: UserRepositoryDep,
+) -> AuthService:
+    return AuthService(
+        token_manager=token_manager,
+        password_hasher=password_hasher,
+        user_repository=user_repository,
+    )
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
@@ -59,7 +81,7 @@ def verify_access_token(
     access_token: AccessTokenDep,
     service: AuthServiceDep,
 ) -> str:
-    return service.verify_access_token(access_token.credentials)
+    return service.verify_access_token(access_token)
 
 
 AuthorizationDep = Annotated[str, Depends(verify_access_token)]

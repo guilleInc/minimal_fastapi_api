@@ -1,4 +1,4 @@
-.PHONY: install dev run generate-env generate-access-token seed-db test lint format check
+.PHONY: install dev run generate-env create-user seed-db test lint format check
 
 install:
 	uv sync
@@ -13,8 +13,8 @@ run:
 generate-env:
 	uv run python -m scripts.generate_env
 
-generate-access-token:
-	uv run python -m scripts.generate_access_token
+create-user:
+	uv run python -m scripts.create_user
 
 seed-db:
 	uv run python -m scripts.seed_db

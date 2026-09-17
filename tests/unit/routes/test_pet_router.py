@@ -7,7 +7,7 @@ from app.services.pet_service_errors import PetNotFoundError, PetServiceError
 
 
 class TestCreatePet:
-    """Tests for POST /pets"""
+    """Tests for POST /api/pets"""
 
     def test_create_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully creating a pet."""
@@ -23,7 +23,7 @@ class TestCreatePet:
         mock_pet_service.add_pet.return_value = pet
 
         response = client.post(
-            "/pets",
+            "/api/pets",
             json={
                 "name": "Fluffy",
                 "species": "cat",
@@ -46,7 +46,7 @@ class TestCreatePet:
         mock_pet_service.add_pet.side_effect = PetServiceError()
 
         response = client.post(
-            "/pets",
+            "/api/pets",
             json={
                 "name": "Fluffy",
                 "species": "cat",
@@ -61,13 +61,13 @@ class TestCreatePet:
 
     def test_create_pet_invalid_payload(self, client: TestClient) -> None:
         """Test create_pet with invalid payload."""
-        response = client.post("/pets", json={"name": "Fluffy"})
+        response = client.post("/api/pets", json={"name": "Fluffy"})
 
         assert response.status_code == 422
 
 
 class TestListPets:
-    """Tests for GET /pets"""
+    """Tests for GET /api/pets"""
 
     def test_list_pets_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully listing pets."""
@@ -91,7 +91,7 @@ class TestListPets:
         )
         mock_pet_service.get_pets.return_value = [pet1, pet2]
 
-        response = client.get("/pets")
+        response = client.get("/api/pets")
 
         assert response.status_code == 200
         assert len(response.json()) == 2
@@ -103,7 +103,7 @@ class TestListPets:
         """Test listing pets when none exist."""
         mock_pet_service.get_pets.return_value = []
 
-        response = client.get("/pets")
+        response = client.get("/api/pets")
 
         assert response.status_code == 200
         assert response.json() == []
@@ -112,13 +112,13 @@ class TestListPets:
         """Test list_pets when service raises PetServiceError."""
         mock_pet_service.get_pets.side_effect = PetServiceError()
 
-        response = client.get("/pets")
+        response = client.get("/api/pets")
 
         assert response.status_code == 500
 
 
 class TestGetPet:
-    """Tests for GET /pets/{pet_id}"""
+    """Tests for GET /api/pets/{pet_id}"""
 
     def test_get_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully getting a pet by ID."""
@@ -133,7 +133,7 @@ class TestGetPet:
         )
         mock_pet_service.get_pet.return_value = pet
 
-        response = client.get("/pets/1")
+        response = client.get("/api/pets/1")
 
         assert response.status_code == 200
         assert response.json()["id"] == 1
@@ -144,7 +144,7 @@ class TestGetPet:
         """Test getting a pet that doesn't exist."""
         mock_pet_service.get_pet.side_effect = PetNotFoundError()
 
-        response = client.get("/pets/999")
+        response = client.get("/api/pets/999")
 
         assert response.status_code == 404
 
@@ -152,13 +152,13 @@ class TestGetPet:
         """Test get_pet when service raises PetServiceError."""
         mock_pet_service.get_pet.side_effect = PetServiceError()
 
-        response = client.get("/pets/1")
+        response = client.get("/api/pets/1")
 
         assert response.status_code == 500
 
 
 class TestUpdatePet:
-    """Tests for PATCH /pets/{pet_id}"""
+    """Tests for PATCH /api/pets/{pet_id}"""
 
     def test_update_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully updating a pet."""
@@ -173,7 +173,7 @@ class TestUpdatePet:
         )
         mock_pet_service.update_pet.return_value = updated_pet
 
-        response = client.patch("/pets/1", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/api/pets/1", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4
@@ -184,7 +184,7 @@ class TestUpdatePet:
         """Test updating a pet that doesn't exist."""
         mock_pet_service.update_pet.side_effect = PetNotFoundError()
 
-        response = client.patch("/pets/999", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/api/pets/999", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 404
 
@@ -194,7 +194,7 @@ class TestUpdatePet:
         """Test update_pet when service raises PetServiceError."""
         mock_pet_service.update_pet.side_effect = PetServiceError()
 
-        response = client.patch("/pets/1", json={"name": "Updated Fluffy", "age": 4})
+        response = client.patch("/api/pets/1", json={"name": "Updated Fluffy", "age": 4})
 
         assert response.status_code == 500
 
@@ -211,20 +211,20 @@ class TestUpdatePet:
         )
         mock_pet_service.update_pet.return_value = updated_pet
 
-        response = client.patch("/pets/1", json={"age": 4})
+        response = client.patch("/api/pets/1", json={"age": 4})
 
         assert response.status_code == 200
         assert response.json()["age"] == 4
 
 
 class TestDeletePet:
-    """Tests for DELETE /pets/{pet_id}"""
+    """Tests for DELETE /api/pets/{pet_id}"""
 
     def test_delete_pet_success(self, client: TestClient, mock_pet_service: AsyncMock) -> None:
         """Test successfully deleting a pet."""
         mock_pet_service.delete_pet.return_value = None
 
-        response = client.delete("/pets/1")
+        response = client.delete("/api/pets/1")
 
         assert response.status_code == 204
         mock_pet_service.delete_pet.assert_called_once_with(1)
@@ -233,7 +233,7 @@ class TestDeletePet:
         """Test deleting a pet that doesn't exist."""
         mock_pet_service.delete_pet.side_effect = PetNotFoundError()
 
-        response = client.delete("/pets/999")
+        response = client.delete("/api/pets/999")
 
         assert response.status_code == 404
 
@@ -243,6 +243,6 @@ class TestDeletePet:
         """Test delete_pet when service raises PetServiceError."""
         mock_pet_service.delete_pet.side_effect = PetServiceError()
 
-        response = client.delete("/pets/1")
+        response = client.delete("/api/pets/1")
 
         assert response.status_code == 500

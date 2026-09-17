@@ -36,7 +36,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession]:
 
 SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 AccessTokenDep = Annotated[str, Depends(oauth2_scheme)]
 PasswordRequestForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 

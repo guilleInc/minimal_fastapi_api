@@ -10,7 +10,7 @@ class TestPetRouterAuthentication:
         invalid_headers: dict[str, str],
     ) -> None:
         # Act
-        response = client.get("/pets/", headers=invalid_headers)
+        response = client.get("/api/pets/", headers=invalid_headers)
 
         # Assert
         assert response.status_code == 401
@@ -19,14 +19,14 @@ class TestPetRouterAuthentication:
 
     def test_missing_access_token(self, client: TestClient) -> None:
         # Act
-        response = client.get("/pets/")
+        response = client.get("/api/pets/")
 
         # Assert
         assert response.status_code == 401
 
 
 class TestCreatePet:
-    """Tests for POST /pets"""
+    """Tests for POST /api/pets"""
 
     def test_create_pet_success(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test successfully creating a pet."""
@@ -42,7 +42,7 @@ class TestCreatePet:
 
         # Act
         response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=payload,
         )
@@ -64,14 +64,14 @@ class TestCreatePet:
         payload = {"name": "Fluffy"}
 
         # Act
-        response = client.post("/pets/", headers=valid_headers, json=payload)
+        response = client.post("/api/pets/", headers=valid_headers, json=payload)
 
         # Assert
         assert response.status_code == 422
 
 
 class TestListPets:
-    """Tests for GET /pets"""
+    """Tests for GET /api/pets"""
 
     def test_list_pets_success(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test successfully listing pets."""
@@ -95,16 +95,16 @@ class TestListPets:
 
         # Act
         client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=first_pet_payload,
         )
         client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=second_pet_payload,
         )
-        response = client.get("/pets/", headers=valid_headers)
+        response = client.get("/api/pets/", headers=valid_headers)
 
         # Assert
         assert response.status_code == 200
@@ -116,7 +116,7 @@ class TestListPets:
     def test_list_pets_empty(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test listing pets when none exist."""
         # Act
-        response = client.get("/pets/", headers=valid_headers)
+        response = client.get("/api/pets/", headers=valid_headers)
 
         # Assert
         assert response.status_code == 200
@@ -124,7 +124,7 @@ class TestListPets:
 
 
 class TestGetPet:
-    """Tests for GET /pets/{pet_id}"""
+    """Tests for GET /api/pets/{pet_id}"""
 
     def test_get_pet_success(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test successfully getting a pet by ID."""
@@ -140,12 +140,12 @@ class TestGetPet:
         }
         # Act
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=payload,
         )
         pet_id = create_response.json()["id"]
-        response = client.get(f"/pets/{pet_id}", headers=valid_headers)
+        response = client.get(f"/api/pets/{pet_id}", headers=valid_headers)
 
         # Assert
         assert response.status_code == 200
@@ -155,14 +155,14 @@ class TestGetPet:
     def test_get_pet_not_found(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test getting a pet that doesn't exist."""
         # Act
-        response = client.get("/pets/999", headers=valid_headers)
+        response = client.get("/api/pets/999", headers=valid_headers)
 
         # Assert
         assert response.status_code == 404
 
 
 class TestUpdatePet:
-    """Tests for PATCH /pets/{pet_id}"""
+    """Tests for PATCH /api/pets/{pet_id}"""
 
     def test_update_pet_success(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test successfully updating a pet."""
@@ -179,13 +179,13 @@ class TestUpdatePet:
 
         # Act
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=create_payload,
         )
         pet_id = create_response.json()["id"]
         payload = {"name": "Updated Fluffy", "age": 4}
-        response = client.patch(f"/pets/{pet_id}", headers=valid_headers, json=payload)
+        response = client.patch(f"/api/pets/{pet_id}", headers=valid_headers, json=payload)
 
         # Assert
         assert response.status_code == 200
@@ -197,7 +197,7 @@ class TestUpdatePet:
         payload = {"name": "Updated Fluffy", "age": 4}
 
         # Act
-        response = client.patch("/pets/999", headers=valid_headers, json=payload)
+        response = client.patch("/api/pets/999", headers=valid_headers, json=payload)
 
         # Assert
         assert response.status_code == 404
@@ -217,13 +217,13 @@ class TestUpdatePet:
 
         # Act
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=create_payload,
         )
         pet_id = create_response.json()["id"]
         payload = {"age": 4}
-        response = client.patch(f"/pets/{pet_id}", headers=valid_headers, json=payload)
+        response = client.patch(f"/api/pets/{pet_id}", headers=valid_headers, json=payload)
 
         # Assert
         assert response.status_code == 200
@@ -243,7 +243,7 @@ class TestUpdatePet:
             "age": 5,
         }
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=create_payload,
         )
@@ -255,11 +255,11 @@ class TestUpdatePet:
         payload = {"name": "Whiskers"}
 
         # Act
-        update_response = client.patch(f"/pets/{pet_id}", headers=valid_headers, json=payload)
+        update_response = client.patch(f"/api/pets/{pet_id}", headers=valid_headers, json=payload)
         # Assert
         assert update_response.status_code == 200
         # Verify other fields are preserved
-        get_response = client.get(f"/pets/{pet_id}", headers=valid_headers)
+        get_response = client.get(f"/api/pets/{pet_id}", headers=valid_headers)
         assert get_response.json()["name"] == "Whiskers"
         assert get_response.json()["species"] == original_species
         assert get_response.json()["breed"] == original_breed
@@ -268,7 +268,7 @@ class TestUpdatePet:
 
 
 class TestDeletePet:
-    """Tests for DELETE /pets/{pet_id}"""
+    """Tests for DELETE /api/pets/{pet_id}"""
 
     def test_delete_pet_success(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test successfully deleting a pet."""
@@ -283,14 +283,14 @@ class TestDeletePet:
             "age": 3,
         }
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=payload,
         )
         pet_id = create_response.json()["id"]
 
         # Act
-        response = client.delete(f"/pets/{pet_id}", headers=valid_headers)
+        response = client.delete(f"/api/pets/{pet_id}", headers=valid_headers)
 
         # Assert
         assert response.status_code == 204
@@ -298,7 +298,7 @@ class TestDeletePet:
     def test_delete_pet_not_found(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test deleting a pet that doesn't exist."""
         # Act
-        response = client.delete("/pets/999", headers=valid_headers)
+        response = client.delete("/api/pets/999", headers=valid_headers)
 
         # Assert
         assert response.status_code == 404
@@ -321,14 +321,14 @@ class TestIntegrationScenarios:
             "age": 2,
         }
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=payload,
         )
         pet_id = create_response.json()["id"]
 
         # Act
-        get_response = client.get(f"/pets/{pet_id}", headers=valid_headers)
+        get_response = client.get(f"/api/pets/{pet_id}", headers=valid_headers)
 
         # Assert
         assert get_response.status_code == 200
@@ -350,7 +350,7 @@ class TestIntegrationScenarios:
             "age": 1,
         }
         create_response = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=create_payload,
         )
@@ -359,14 +359,14 @@ class TestIntegrationScenarios:
         update_payload = {"name": "Max Jr", "age": 2}
 
         # Act
-        get_response = client.get(f"/pets/{pet_id}", headers=valid_headers)
+        get_response = client.get(f"/api/pets/{pet_id}", headers=valid_headers)
         # Assert
         assert get_response.status_code == 200
         assert get_response.json()["name"] == "Max"
 
         # Act
         update_response = client.patch(
-            f"/pets/{pet_id}", headers=valid_headers, json=update_payload
+            f"/api/pets/{pet_id}", headers=valid_headers, json=update_payload
         )
         # Assert
         assert update_response.status_code == 200
@@ -374,12 +374,12 @@ class TestIntegrationScenarios:
         assert update_response.json()["age"] == 2
 
         # Act
-        delete_response = client.delete(f"/pets/{pet_id}", headers=valid_headers)
+        delete_response = client.delete(f"/api/pets/{pet_id}", headers=valid_headers)
         # Assert
         assert delete_response.status_code == 204
 
         # Act
-        not_found_response = client.get(f"/pets/{pet_id}", headers=valid_headers)
+        not_found_response = client.get(f"/api/pets/{pet_id}", headers=valid_headers)
         # Assert
         assert not_found_response.status_code == 404
 
@@ -416,56 +416,56 @@ class TestIntegrationScenarios:
 
         # Act
         pet1 = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=first_pet_payload,
         )
         pet1_id = pet1.json()["id"]
 
         pet2 = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=second_pet_payload,
         )
         pet2_id = pet2.json()["id"]
 
         pet3 = client.post(
-            "/pets/",
+            "/api/pets/",
             headers=valid_headers,
             json=third_pet_payload,
         )
         pet3_id = pet3.json()["id"]
-        list_response = client.get("/pets/", headers=valid_headers)
+        list_response = client.get("/api/pets/", headers=valid_headers)
         # Assert
         assert list_response.status_code == 200
         assert len(list_response.json()) == 3
 
         # Act
-        delete_response = client.delete(f"/pets/{pet2_id}", headers=valid_headers)
+        delete_response = client.delete(f"/api/pets/{pet2_id}", headers=valid_headers)
         # Assert
         assert delete_response.status_code == 204
 
         # List should have 2 pets now
         # Act
-        list_response = client.get("/pets/", headers=valid_headers)
+        list_response = client.get("/api/pets/", headers=valid_headers)
         # Assert
         assert len(list_response.json()) == 2
 
         # Verify deleted pet is gone
         # Act
-        get_response = client.get(f"/pets/{pet2_id}", headers=valid_headers)
+        get_response = client.get(f"/api/pets/{pet2_id}", headers=valid_headers)
         # Assert
         assert get_response.status_code == 404
 
         # Verify other pets still exist
         # Act
-        get_response1 = client.get(f"/pets/{pet1_id}", headers=valid_headers)
+        get_response1 = client.get(f"/api/pets/{pet1_id}", headers=valid_headers)
         # Assert
         assert get_response1.status_code == 200
         assert get_response1.json()["name"] == "Fluffy"
 
         # Act
-        get_response3 = client.get(f"/pets/{pet3_id}", headers=valid_headers)
+        get_response3 = client.get(f"/api/pets/{pet3_id}", headers=valid_headers)
         # Assert
         assert get_response3.status_code == 200
         assert get_response3.json()["name"] == "Tweety"

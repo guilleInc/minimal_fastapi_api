@@ -13,7 +13,7 @@ from app.dependencies import (
     verify_access_token,
 )
 from app.exception_handlers import register_exception_handlers
-from app.routes.pet_router import router as pet_router
+from app.routes.router import router
 from app.services.pet_service import PetService
 
 
@@ -41,7 +41,7 @@ def client(mock_pet_service: AsyncMock) -> Iterator[TestClient]:
     # Create a test app without database lifespan
     test_app = FastAPI(lifespan=no_lifespan)
     register_exception_handlers(test_app)
-    test_app.include_router(pet_router)
+    test_app.include_router(router)
 
     # Override the dependency functions, not the types
     test_app.dependency_overrides[get_db_session] = lambda: AsyncMock()

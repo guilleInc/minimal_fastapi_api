@@ -6,7 +6,7 @@ ENVIRONMENT_VARIABLES = [
     "ENVIRONMENT=development",
     f"JWT_SECRET_KEY={token_urlsafe(32)}",
     "JWT_ALGORITHM=HS256",
-    "DATABASE_FILE=pets.db",
+    "DATABASE_PATH=./pets.db",
 ]
 
 

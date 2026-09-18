@@ -17,7 +17,7 @@ password_hasher = PasswordHasher()
 
 
 async def ensure_database() -> None:
-    if os.path.exists(settings.database_file):
+    if os.path.exists(settings.database_path):
         return
 
     async with engine.begin() as connection:

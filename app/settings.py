@@ -10,10 +10,10 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     environment: str = "development"
-    database_file: str = "pets.db"
+    database_path: str = "./pets.db"
     image_upload_dir: str = "uploads/pets"
     image_max_size_bytes: int = 5 * 1024 * 1024
 
     @property
     def database_url(self) -> str:
-        return f"sqlite+aiosqlite:///./{self.database_file}"
+        return f"sqlite+aiosqlite:///{self.database_path}"

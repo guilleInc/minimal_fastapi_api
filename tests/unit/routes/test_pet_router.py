@@ -160,7 +160,7 @@ class TestGetPet:
         )
         mock_pet_service.get_pet.return_value = pet
 
-        response = client.get("/pets/1")
+        response = client.get("/api/pets/1")
 
         assert response.status_code == 200
         assert response.json()["image_url"] == f"{image_url_prefix}/image-123.webp"

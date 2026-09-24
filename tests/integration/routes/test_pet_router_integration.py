@@ -55,6 +55,7 @@ class TestCreatePet:
         assert response.json()["color"] == "white"
         assert response.json()["owner_name"] == "Alice"
         assert response.json()["age"] == 3
+        assert response.json()["image_url"] is None
 
     def test_create_pet_invalid_payload(
         self, client: TestClient, valid_headers: dict[str, str]
@@ -112,6 +113,8 @@ class TestListPets:
         assert len(pets) == 2
         assert pets[0]["name"] == "Fluffy"
         assert pets[1]["name"] == "Rex"
+        assert pets[0]["image_url"] is None
+        assert pets[1]["image_url"] is None
 
     def test_list_pets_empty(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test listing pets when none exist."""
@@ -151,6 +154,7 @@ class TestGetPet:
         assert response.status_code == 200
         assert response.json()["id"] == pet_id
         assert response.json()["name"] == "Fluffy"
+        assert response.json()["image_url"] is None
 
     def test_get_pet_not_found(self, client: TestClient, valid_headers: dict[str, str]) -> None:
         """Test getting a pet that doesn't exist."""

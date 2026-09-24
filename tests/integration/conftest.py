@@ -18,6 +18,7 @@ def test_settings() -> Mock:
     settings = Mock(spec=Settings)
     settings.jwt_secret_key = "integration-test-jwt-secret-key7f3c9a2d1e6b4f8a0c5d9e2b6a1f7c3d"
     settings.jwt_algorithm = "HS256"
+    settings.image_url_prefix = "/uploads/pets"
     return settings
 
 

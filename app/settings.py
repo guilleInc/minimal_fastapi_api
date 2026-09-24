@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_path: str = "./pets.db"
     image_upload_dir: str = "uploads/pets"
-    image_url_prefix: str = "http://localhost:8000/uploads/pets"
+    image_url_prefix: str = "/uploads/pets"
     image_max_size_bytes: int = 5 * 1024 * 1024
 
     @property

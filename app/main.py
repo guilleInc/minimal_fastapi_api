@@ -24,7 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 Path(settings.image_upload_dir).mkdir(parents=True, exist_ok=True)
 app.mount(
-    "/uploads/pets",
+    "/api/uploads/pets",
     StaticFiles(directory=settings.image_upload_dir),
     name="pet-images",
 )

@@ -8,6 +8,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 COPY app ./app
 COPY scripts ./scripts
+COPY data ./data
 
 RUN mkdir -p /data /uploads
 

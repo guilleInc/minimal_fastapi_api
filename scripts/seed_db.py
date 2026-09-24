@@ -1,7 +1,10 @@
 import asyncio
 import json
 import os
+import shutil
+from pathlib import Path
 from typing import Any
+from uuid import NAMESPACE_URL, uuid5
 
 from sqlalchemy.dialects.sqlite import insert
 
@@ -12,6 +15,7 @@ from app.models.base import Base
 from app.security.password_hasher import PasswordHasher
 
 DATA_FILE = "data/data.json"
+IMAGE_DATA_DIR = Path("data/pet_images")
 
 password_hasher = PasswordHasher()
 
@@ -31,7 +35,34 @@ def load_pets() -> list[dict[str, Any]]:
     if not isinstance(records, list):
         raise ValueError(f"{DATA_FILE} must contain a JSON array")
 
-    return [PetCreate.model_validate(record).model_dump() for record in records]
+    pets = []
+    for record in records:
+        image_filename = record.pop("image", None)
+        pet = PetCreate.model_validate(record).model_dump()
+
+        if image_filename is not None:
+            image_id = copy_seed_image(image_filename)
+            pet["image_id"] = image_id
+
+        pets.append(pet)
+
+    return pets
+
+
+def copy_seed_image(filename: str) -> str:
+    image_path = Path(filename)
+    if image_path.name != filename or image_path.suffix.lower() != ".webp":
+        raise ValueError(f"Invalid seed image filename: {filename}")
+
+    source_path = IMAGE_DATA_DIR / image_path
+    if not source_path.is_file():
+        raise FileNotFoundError(f"Seed image not found: {source_path}")
+
+    image_id = str(uuid5(NAMESPACE_URL, f"minimal-pets-api/{filename}"))
+    destination_dir = Path(settings.image_upload_dir)
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source_path, destination_dir / f"{image_id}.webp")
+    return image_id
 
 
 async def insert_pets(pets: list[dict[str, Any]]) -> int:

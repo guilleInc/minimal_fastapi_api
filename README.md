@@ -56,3 +56,15 @@ docker exec -it pets-api python -m scripts.create_user
 ```
 
 The database uses SQLite, so run a single application container. Use a server database such as PostgreSQL before scaling to multiple replicas. Back up `/srv/minimal-pets-api/db` and `/srv/minimal-pets-api/uploads` or the underlying EBS volume.
+
+## Pet image uploads
+
+`POST /api/pets/{pet_id}/image` accepts JPEG, PNG, and WebP images up to 5 MB.
+The uploaded image must be no larger than 4096x4096 pixels. Every accepted
+image is converted to WebP using Pillow's default encoding settings and
+resized down, without changing its aspect ratio, to a maximum of 2048x2048
+pixels before it is stored.
+
+The API stores normalized image files in `IMAGE_UPLOAD_DIR` and keeps only the
+generated image ID in the database. The bundled seed images are copied as-is by
+`scripts/seed_db.py` and are not processed by the upload normalization rules.

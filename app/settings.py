@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     image_upload_dir: str = "uploads/pets"
     image_url_prefix: str = "/uploads/pets"
     image_max_size_bytes: int = 5 * 1024 * 1024
+    image_max_input_dimension: int = 4096
+    image_max_output_dimension: int = 2048
 
     @property
     def database_url(self) -> str:

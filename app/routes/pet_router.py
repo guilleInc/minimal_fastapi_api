@@ -54,7 +54,7 @@ async def add_pet_image(
     image: UploadFile,
     service: PetImageServiceDep,
 ) -> PetSchema:
-    pet = await service.add_image(pet_id, image)
+    pet = await service.add_image(pet_id, image.file)
     return PetSchema.model_validate(pet)
 
 

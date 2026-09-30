@@ -95,12 +95,7 @@ PetRepositoryDep = Annotated[PetRepository, Depends(get_pet_repository)]
 
 
 def get_image_repository(settings: SettingsDep) -> ImageRepository:
-    return FileSystemImageRepository(
-        image_upload_dir=settings.image_upload_dir,
-        image_max_size_bytes=settings.image_max_size_bytes,
-        image_max_input_dimension=settings.image_max_input_dimension,
-        image_max_output_dimension=settings.image_max_output_dimension,
-    )
+    return FileSystemImageRepository(image_upload_dir=settings.image_upload_dir)
 
 
 ImageRepositoryDep = Annotated[ImageRepository, Depends(get_image_repository)]

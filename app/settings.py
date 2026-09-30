@@ -1,6 +1,22 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+class ImageSettings:
+    MAX_SIZE_BYTES = 5 * 1024 * 1024
+    MAX_INPUT_DIMENSION = 4096
+    MAX_OUTPUT_DIMENSION = 2048
+    ALLOWED_MIME_TYPES = {
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+    }
+    ALLOWED_FORMATS = {
+        "JPEG",
+        "PNG",
+        "WEBP",
+    }
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -23,3 +39,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+image_settings = ImageSettings()

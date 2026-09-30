@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
 from fastapi.responses import Response
 
 from app.dependencies import PetImageServiceDep, PetServiceDep, verify_access_token
 from app.domain.pets import PetCreate, PetUpdate
 from app.schemas.pet_schema import PetCreateSchema, PetSchema, PetUpdateSchema
+from app.settings import image_settings
 
 router = APIRouter(
     prefix="/pets",
@@ -54,6 +55,12 @@ async def add_pet_image(
     image: UploadFile,
     service: PetImageServiceDep,
 ) -> PetSchema:
+    if image.size is None or image.size > image_settings.MAX_SIZE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Image exceeds the maximum allowed size",
+        )
+
     pet = await service.add_image(pet_id, image.file)
     return PetSchema.model_validate(pet)
 
